@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CheckIn30 - Daily Rewards</title>
+    <title>CheckIn30 - Daily Rewards Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -29,143 +29,671 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: #0f0c29;
             color: white;
-            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Screens */
-        .screen {
-            display: none;
-            min-height: 100vh;
-            width: 100%;
+        /* Header - Fixed at top */
+        .main-header {
             position: fixed;
             top: 0;
             left: 0;
-        }
-
-        .screen.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        /* Loading */
-        #loading-screen {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .loading-container {
-            text-align: center;
-        }
-
-        .logo-animation {
-            animation: bounce 2s infinite;
-        }
-
-        .logo-icon {
-            font-size: 5rem;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .logo-text {
-            font-family: 'Poppins', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
-            border-top: 5px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        /* Auth Screen */
-        #auth-screen {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            right: 0;
             background: rgba(15, 12, 41, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .auth-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 40px 30px;
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .auth-logo {
+        .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 10px;
-            margin-bottom: 10px;
         }
 
-        .auth-logo i {
-            font-size: 2rem;
+        .logo i {
+            font-size: 1.8rem;
             color: var(--accent);
         }
 
-        .auth-logo h2 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 2rem;
+        .logo span {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            padding: 8px 20px;
+            border: 2px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .header-btn:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .header-btn.active {
+            background: var(--accent);
             color: white;
         }
 
-        .auth-subtitle {
+        /* Main Container */
+        .main-container {
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(58, 12, 163, 0.1));
+            padding: 80px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--accent), white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-box i {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .stat-box h3 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-box p {
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.9rem;
         }
 
-        /* Tabs */
-        .auth-tabs {
-            display: flex;
+        /* Features Section */
+        .features-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 5px;
-            margin-bottom: 20px;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 12px;
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 8px;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .auth-tab.active {
-            background: var(--primary);
+        .feature-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+
+        .feature-icon i {
+            font-size: 2rem;
             color: white;
         }
 
-        /* Forms */
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        /* Process Section */
+        .process-section {
+            padding: 80px 20px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .step-card {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .step-card p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Ads Section */
+        .ads-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .ad-container {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .ad-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ad-banner {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 40px;
+        }
+
+        /* Timer Section */
+        .timer-section {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(67, 97, 238, 0.1));
+            text-align: center;
+        }
+
+        .timer-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .timer-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .timer-header i {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 25px 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .timer-progress {
+            margin: 30px 0;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .timer-btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .timer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.3);
+        }
+
+        .timer-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Daily Check-in Section */
+        .checkin-section {
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .streak-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .streak-days {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .day-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .day-box.active {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+        }
+
+        .day-box.completed {
+            background: rgba(46, 204, 113, 0.3);
+            color: var(--success);
+        }
+
+        .checkin-btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        /* Rewards Section */
+        .rewards-section {
+            padding: 80px 20px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .reward-card {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .reward-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .reward-header i {
+            font-size: 3rem;
+            color: var(--accent);
+        }
+
+        .progress-container {
+            margin: 30px 0;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .reward-status {
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 25px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Referral Section */
+        .referral-section {
+            padding: 80px 20px;
+        }
+
+        .referral-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .referral-code {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.8rem;
+            letter-spacing: 3px;
+            margin: 25px 0;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        /* Profile Section */
+        .profile-section {
+            padding: 80px 20px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .profile-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-avatar i {
+            font-size: 3rem;
+            color: white;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .contact-btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .contact-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 60px 20px 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+
+        /* Login/Register Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(15, 12, 41, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+        }
+
         .auth-form {
             display: none;
         }
@@ -176,22 +704,21 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
             color: rgba(255, 255, 255, 0.9);
-            font-size: 0.9rem;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 15px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            border-radius: 10px;
             color: white;
             font-size: 1rem;
         }
@@ -201,616 +728,54 @@
             border-color: var(--accent);
         }
 
-        /* Buttons */
-        .btn {
-            padding: 14px 20px;
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            border-radius: 8px;
+            color: white;
+            border-radius: 10px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            color: white;
+            margin-top: 10px;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #27ae60);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, var(--accent), #3a86ff);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* Error Messages */
         .error-message {
             color: var(--danger);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             margin-top: 10px;
             text-align: center;
-            padding: 8px;
-            background: rgba(231, 76, 60, 0.1);
-            border-radius: 5px;
-            border-left: 3px solid var(--danger);
         }
 
-        /* Auth Banner */
-        .auth-banner {
-            margin-top: 20px;
+        /* Check-in Modal */
+        .checkin-modal .modal-content {
+            max-width: 600px;
         }
 
-        /* Main App */
-        #app-container {
-            display: none;
-        }
-
-        #app-container.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(15, 12, 41, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            display: flex;
-            justify-content: space-around;
-            z-index: 1000;
-        }
-
-        .nav-item {
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.6);
-            padding: 10px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .nav-item.active {
-            color: var(--accent);
-        }
-
-        .nav-item i {
-            font-size: 1.2rem;
-        }
-
-        /* Main Content */
-        .main-content {
-            padding: 20px 15px 80px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .content-section {
-            display: none;
-        }
-
-        .content-section.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        /* Welcome Card */
-        .welcome-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .welcome-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .user-info h3 {
-            color: var(--accent);
-            font-size: 1.3rem;
-            margin-bottom: 5px;
-        }
-
-        .user-info p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-
-        .points-badge {
-            background: linear-gradient(135deg, #7209b7, #3a0ca3);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
+        .checkin-timer {
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 30px 0;
         }
 
-        .stat-card i {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 10px;
-        }
-
-        .stat-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-        }
-
-        .stat-card p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.85rem;
-        }
-
-        /* Timer Section */
-        .timer-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .timer-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .timer-header i {
+        .checkin-timer h4 {
             font-size: 1.5rem;
-            color: var(--accent);
-        }
-
-        .timer-info h4 {
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-        }
-
-        .timer-info p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-
-        .timer-progress {
-            margin: 15px 0;
-        }
-
-        .timer-bar {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-
-        .timer-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            border-radius: 4px;
-            width: 0%;
-            transition: width 1s linear;
-        }
-
-        .timer-text {
-            display: flex;
-            justify-content: space-between;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.85rem;
-        }
-
-        /* Check-in Button */
-        .checkin-btn {
-            margin-top: 15px;
-        }
-
-        /* Features Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
             margin-bottom: 20px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .feature-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-        }
-
-        .feature-icon i {
-            color: white;
-            font-size: 1.3rem;
-        }
-
-        .feature-card h4 {
-            font-size: 1rem;
-            margin-bottom: 10px;
-        }
-
-        .feature-card p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        /* Ads Container */
-        .ad-banner-container {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            padding: 10px;
-            margin: 20px 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            min-height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .ad-placeholder {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
-        }
-
-        /* Content Cards */
-        .content-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Rewards Section */
-        .reward-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .reward-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .reward-header i {
-            font-size: 2rem;
-            color: #7209b7;
-        }
-
-        .progress-container {
-            margin: 20px 0;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .progress-bar {
-            height: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #7209b7, var(--primary));
-            border-radius: 5px;
-            width: 0%;
-            transition: width 1s ease;
-        }
-
-        .reward-status {
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            margin: 20px 0;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .reward-status i {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .reward-form {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Referral Section */
-        .referral-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .referral-code {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            margin: 20px 0;
-            font-family: monospace;
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            color: var(--accent);
-        }
-
-        .referral-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .referral-stat {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .referral-stat h4 {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-            color: var(--accent);
-        }
-
-        .referral-stat p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.85rem;
-        }
-
-        .referral-rules {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        /* Profile Section */
-        .profile-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .profile-avatar {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--accent), var(--primary));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .profile-avatar i {
-            font-size: 2rem;
-            color: white;
-        }
-
-        .profile-info h3 {
-            font-size: 1.3rem;
-            margin-bottom: 5px;
-        }
-
-        .profile-info p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-
-        .profile-details {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-        }
-
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-
-        /* Popups */
-        .popup-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .popup-overlay.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .popup-content {
-            background: rgba(15, 12, 41, 0.95);
-            border-radius: 20px;
-            padding: 25px;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: slideUp 0.3s ease;
-        }
-
-        .popup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .popup-header h3 {
-            font-size: 1.3rem;
-            color: var(--accent);
-        }
-
-        .popup-close {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-        }
-
-        .popup-body {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .popup-ad {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            margin: 20px 0;
-            border: 1px dashed rgba(255, 255, 255, 0.2);
-        }
-
-        .popup-timer {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 2rem;
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        /* Contact Button */
-        .contact-btn {
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-            padding: 10px 20px;
-            border-radius: 10px;
-            margin-top: 15px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.85rem;
-            margin-top: 20px;
         }
 
         /* Toast */
         .toast {
             position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 30px;
+            right: 30px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 12px 25px;
+            padding: 15px 25px;
             border-radius: 10px;
             z-index: 3000;
-            animation: slideUp 0.3s ease;
+            animation: slideInRight 0.3s ease;
             display: none;
-            max-width: 90%;
-            text-align: center;
+            max-width: 400px;
         }
 
         .toast.active {
@@ -826,7 +791,7 @@
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -834,838 +799,508 @@
             }
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .stats-grid,
-            .features-grid,
-            .referral-stats {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .features-grid {
                 grid-template-columns: 1fr;
             }
-        }
 
-        @media (min-width: 768px) {
-            .bottom-nav {
-                max-width: 500px;
-                left: 50%;
-                transform: translateX(-50%);
-                border-radius: 20px 20px 0 0;
-                bottom: 20px;
+            .steps-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .step-card {
+                max-width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="screen active">
-        <div class="loading-container">
-            <div class="logo-animation">
-                <i class="fas fa-calendar-check logo-icon"></i>
-                <h1 class="logo-text">CheckIn30</h1>
-            </div>
-            <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 20px;">
-                Loading your rewards dashboard...
-            </p>
-            <div class="loading-spinner"></div>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-calendar-check"></i>
+            <span>CheckIn30</span>
         </div>
+        <div class="auth-buttons">
+            <button class="header-btn" id="login-header-btn">Login</button>
+            <button class="header-btn" id="register-header-btn">Register</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Earn Daily Rewards</h1>
+            <p class="hero-subtitle">Complete simple daily check-ins for 30 days and claim amazing rewards. Start earning today with our trusted platform.</p>
+            
+            <div class="hero-stats">
+                <div class="stat-box">
+                    <i class="fas fa-users"></i>
+                    <h3>10,000+</h3>
+                    <p>Active Users</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-gift"></i>
+                    <h3>₹50,000+</h3>
+                    <p>Rewards Paid</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>100%</h3>
+                    <p>Secure Platform</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2 class="section-title">Why Choose CheckIn30?</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3>Daily Rewards</h3>
+                    <p>Earn points every day by completing simple check-ins. Consistent participation leads to bigger rewards.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Trusted System</h3>
+                    <p>Secure and transparent platform with verified payouts. Your earnings are always protected.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Fast Processing</h3>
+                    <p>Quick reward processing within 3 days of request. Simple UPI transfer directly to your account.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ad 1 -->
+        <section class="ads-section">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <div class="ad-banner">
+                    <!-- Ad 1 -->
+                    <script>
+                        atOptions = {
+                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
+                            'format' : 'iframe',
+                            'height' : 50,
+                            'width' : 320,
+                            'params' : {}
+                        };
+                    </script>
+                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Section -->
+        <section class="process-section">
+            <h2 class="section-title">How It Works</h2>
+            
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Visit Daily</h3>
+                    <p>Come to the website every day and explore for 2 minutes</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Check-in</h3>
+                    <p>Complete daily check-in after timer unlocks the button</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Track Progress</h3>
+                    <p>Monitor your streak and active days toward the 30-day goal</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Claim Reward</h3>
+                    <p>After 30 active days, request and receive your reward</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timer Section -->
+        <section class="timer-section">
+            <div class="timer-container">
+                <div class="timer-header">
+                    <i class="fas fa-clock"></i>
+                    <h2>Daily Check-in Timer</h2>
+                </div>
+                
+                <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 20px;">
+                    Browse the website for 2 minutes to unlock daily check-in
+                </p>
+                
+                <div class="timer-display" id="timer-display">2:00</div>
+                
+                <div class="timer-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>Time Spent:</span>
+                        <span id="time-spent">0:00</span>
+                    </div>
+                </div>
+                
+                <button class="timer-btn" id="start-timer-btn" disabled>
+                    <i class="fas fa-play"></i> Start Timer (Login Required)
+                </button>
+            </div>
+        </section>
+
+        <!-- Ad 2 -->
+        <section class="ads-section">
+            <div class="ad-container">
+                <div class="ad-label">Sponsored</div>
+                <div class="ad-banner">
+                    <!-- Ad 2 -->
+                    <script>
+                        atOptions = {
+                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
+                            'format' : 'iframe',
+                            'height' : 50,
+                            'width' : 320,
+                            'params' : {}
+                        };
+                    </script>
+                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Check-in Section -->
+        <section class="checkin-section">
+            <div class="streak-container">
+                <h2 class="section-title">Your Daily Streak</h2>
+                
+                <div class="streak-days" id="streak-days">
+                    <!-- Days will be dynamically added here -->
+                </div>
+                
+                <button class="checkin-btn" id="daily-checkin-btn" disabled>
+                    <i class="fas fa-lock"></i> Unlock Daily Check-in
+                </button>
+                
+                <p style="color: rgba(255, 255, 255, 0.7); margin-top: 20px; font-size: 0.9rem;">
+                    Complete 30 days to become eligible for reward
+                </p>
+            </div>
+        </section>
+
+        <!-- Ad 3 -->
+        <section class="ads-section">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <div class="ad-banner">
+                    <!-- Ad 3 -->
+                    <script>
+                        atOptions = {
+                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
+                            'format' : 'iframe',
+                            'height' : 50,
+                            'width' : 320,
+                            'params' : {}
+                        };
+                    </script>
+                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rewards Section -->
+        <section class="rewards-section">
+            <h2 class="section-title">30-Day Reward Program</h2>
+            
+            <div class="reward-card">
+                <div class="reward-header">
+                    <i class="fas fa-award"></i>
+                    <div>
+                        <h3>Complete 30 Days & Earn</h3>
+                        <p>Track your progress and claim your reward</p>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <span>Your Progress: <strong id="current-days">0</strong>/30 days</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="reward-progress"></div>
+                    </div>
+                </div>
+                
+                <div class="reward-status" id="reward-status">
+                    <i class="fas fa-info-circle"></i>
+                    <h4>Login to Track Progress</h4>
+                    <p>Sign in to start your 30-day journey</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ad 4 -->
+        <section class="ads-section">
+            <div class="ad-container">
+                <div class="ad-label">Sponsored</div>
+                <div class="ad-banner">
+                    <!-- Ad 4 -->
+                    <script>
+                        atOptions = {
+                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
+                            'format' : 'iframe',
+                            'height' : 50,
+                            'width' : 320,
+                            'params' : {}
+                        };
+                    </script>
+                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
+                </div>
+            </div>
+        </section>
+
+        <!-- Referral Section -->
+        <section class="referral-section">
+            <h2 class="section-title">Refer & Earn</h2>
+            
+            <div class="referral-card">
+                <div class="reward-header">
+                    <i class="fas fa-user-plus"></i>
+                    <div>
+                        <h3>Invite Friends, Earn More</h3>
+                        <p>Get bonus points for every successful referral</p>
+                    </div>
+                </div>
+                
+                <div class="referral-code" id="referral-code-display">
+                    LOGIN TO GET CODE
+                </div>
+                
+                <p style="color: rgba(255, 255, 255, 0.7); text-align: center; margin: 20px 0;">
+                    Share your code with friends. When they complete 3 check-ins, you get +5 points!
+                </p>
+            </div>
+        </section>
+
+        <!-- Ad 5 -->
+        <section class="ads-section">
+            <div class="ad-container">
+                <div class="ad-label">Advertisement</div>
+                <div class="ad-banner">
+                    <!-- Ad 5 -->
+                    <script>
+                        atOptions = {
+                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
+                            'format' : 'iframe',
+                            'height' : 50,
+                            'width' : 320,
+                            'params' : {}
+                        };
+                    </script>
+                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section class="profile-section">
+            <h2 class="section-title">Your Profile</h2>
+            
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <h3 id="profile-name">Guest User</h3>
+                        <p id="profile-email">Login to view your profile</p>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <span>Account Status:</span>
+                        <span id="account-status">Not Logged In</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="contact-btn" id="profile-contact-btn">
+                        <i class="fas fa-envelope"></i> Contact Support
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <h2 class="section-title">Need Help?</h2>
+            <p style="color: rgba(255, 255, 255, 0.8); max-width: 600px; margin: 0 auto 30px;">
+                Have questions or need support? Our team is here to help you with any issues or queries.
+            </p>
+            
+            <button class="contact-btn" id="contact-support-btn">
+                <i class="fas fa-headset"></i> Contact Support Team
+            </button>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-logo">CheckIn30</div>
+            
+            <div class="footer-links">
+                <a href="#" class="footer-link">Terms of Service</a>
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">FAQ</a>
+                <a href="#" class="footer-link">Contact</a>
+            </div>
+            
+            <div class="copyright">
+                © 2024 CheckIn30. All rights reserved.
+            </div>
+        </footer>
     </div>
 
-    <!-- Auth Screen -->
-    <div id="auth-screen" class="screen">
-        <div class="auth-container">
-            <div class="auth-header">
-                <div class="auth-logo">
-                    <i class="fas fa-calendar-check"></i>
-                    <h2>CheckIn30</h2>
-                </div>
-                <p class="auth-subtitle">Daily check-ins, consistent rewards</p>
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('login-modal')">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-header">
+                <h3>Welcome Back</h3>
+                <p>Login to your CheckIn30 account</p>
             </div>
             
-            <div class="auth-tabs">
-                <button class="auth-tab active" data-tab="login">Login</button>
-                <button class="auth-tab" data-tab="register">Register</button>
-            </div>
-            
-            <!-- Login Form -->
             <div id="login-form" class="auth-form active">
                 <div class="form-group">
-                    <label for="login-email">Email</label>
+                    <label for="login-email">Email Address</label>
                     <input type="email" id="login-email" placeholder="Enter your email">
                 </div>
+                
                 <div class="form-group">
                     <label for="login-password">Password</label>
                     <input type="password" id="login-password" placeholder="Enter your password">
                 </div>
-                <button id="login-btn" class="btn btn-primary">
+                
+                <button class="submit-btn" id="login-submit-btn">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </button>
+                
                 <div id="login-error" class="error-message"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal-overlay" id="register-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('register-modal')">
+                <i class="fas fa-times"></i>
+            </button>
             
-            <!-- Register Form -->
-            <div id="register-form" class="auth-form">
+            <div class="modal-header">
+                <h3>Create Account</h3>
+                <p>Join CheckIn30 and start earning</p>
+            </div>
+            
+            <div id="register-form" class="auth-form active">
                 <div class="form-group">
-                    <label for="register-email">Email</label>
+                    <label for="register-email">Email Address</label>
                     <input type="email" id="register-email" placeholder="Enter your email">
                 </div>
+                
                 <div class="form-group">
                     <label for="register-password">Password</label>
-                    <input type="password" id="register-password" placeholder="Min 6 characters">
+                    <input type="password" id="register-password" placeholder="Create a password (min 6 chars)">
                 </div>
+                
                 <div class="form-group">
-                    <label for="referral-code-input">Referral Code (Optional)</label>
-                    <input type="text" id="referral-code-input" placeholder="Friend's referral code">
+                    <label for="referral-code">Referral Code (Optional)</label>
+                    <input type="text" id="referral-code" placeholder="Enter friend's code">
                 </div>
-                <button id="register-btn" class="btn btn-primary">
+                
+                <button class="submit-btn" id="register-submit-btn">
                     <i class="fas fa-user-plus"></i> Create Account
                 </button>
+                
                 <div id="register-error" class="error-message"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- Check-in Modal -->
+    <div class="modal-overlay checkin-modal" id="checkin-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('checkin-modal')">
+                <i class="fas fa-times"></i>
+            </button>
             
-            <!-- Auth Banner AD -->
-            <div class="auth-banner">
-                <div class="ad-banner-container">
-                    <div class="ad-placeholder">
-                        <i class="fas fa-ad"></i>
-                        <p>Advertisement</p>
-                    </div>
+            <div class="modal-header">
+                <h3>Complete Daily Check-in</h3>
+                <p>View ad to complete your daily streak</p>
+            </div>
+            
+            <div class="checkin-timer">
+                <h4>Time Remaining: <span id="checkin-timer">5</span>s</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="checkin-progress"></div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Main App -->
-    <div id="app-container" class="screen">
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Home Section -->
-            <section id="home-section" class="content-section active">
-                <!-- Welcome Card -->
-                <div class="welcome-card">
-                    <div class="welcome-header">
-                        <div class="user-info">
-                            <h3 id="user-greeting">Welcome!</h3>
-                            <p id="user-email">user@example.com</p>
-                        </div>
-                        <div class="points-badge">
-                            <i class="fas fa-coins"></i>
-                            <span id="user-points">0</span> Points
-                        </div>
-                    </div>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <i class="fas fa-fire"></i>
-                            <h3 id="streak-days">0</h3>
-                            <p>Day Streak</p>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-calendar-check"></i>
-                            <h3 id="active-days">0</h3>
-                            <p>Active Days</p>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-clock"></i>
-                            <h3 id="days-left">30</h3>
-                            <p>Days Left</p>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-trophy"></i>
-                            <h3 id="reward-status-icon">❌</h3>
-                            <p>Reward Status</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AD 1 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-
-                <!-- Timer Section -->
-                <div class="timer-section">
-                    <div class="timer-header">
-                        <i class="fas fa-hourglass-half"></i>
-                        <div class="timer-info">
-                            <h4>Daily Check-in Timer</h4>
-                            <p id="timer-message">⏳ Explore website for 2 minutes</p>
-                        </div>
-                    </div>
-                    
-                    <div class="timer-progress">
-                        <div class="timer-bar">
-                            <div id="timer-fill" class="timer-fill"></div>
-                        </div>
-                        <div class="timer-text">
-                            <span>Time:</span>
-                            <span id="timer-display">0:00 / 2:00</span>
-                        </div>
-                    </div>
-                    
-                    <button id="checkin-btn" class="btn btn-primary checkin-btn" disabled>
-                        <i class="fas fa-lock"></i> Unlock Daily Check-in
-                    </button>
-                </div>
-
-                <!-- AD 2 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-
-                <!-- Features -->
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-gift"></i>
-                        </div>
-                        <h4>Daily Rewards</h4>
-                        <p>Earn 10 points every day</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <h4>Trusted System</h4>
-                        <p>Secure and reliable platform</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <h4>Fast Processing</h4>
-                        <p>Rewards in 3 days</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <h4>Refer Friends</h4>
-                        <p>Earn 5 bonus points</p>
-                    </div>
-                </div>
-
-                <!-- AD 3 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-
-                <!-- How It Works -->
-                <div class="content-card">
-                    <h3 style="margin-bottom: 15px; color: var(--accent);">How It Works</h3>
-                    <div style="display: flex; flex-direction: column; gap: 15px;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="background: var(--primary); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</div>
-                            <div>
-                                <h4 style="font-size: 1rem;">Visit Daily</h4>
-                                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">Come to website every day</p>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="background: var(--primary); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</div>
-                            <div>
-                                <h4 style="font-size: 1rem;">Complete Check-in</h4>
-                                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">After 2 minutes of browsing</p>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="background: var(--primary); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</div>
-                            <div>
-                                <h4 style="font-size: 1rem;">Track Progress</h4>
-                                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">Monitor your 30-day journey</p>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="background: var(--primary); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">4</div>
-                            <div>
-                                <h4 style="font-size: 1rem;">Claim Reward</h4>
-                                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">After 30 days, get your reward</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AD 4 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-
-                <!-- Benefits -->
-                <div class="content-card">
-                    <h3 style="margin-bottom: 15px; color: var(--accent);">Benefits</h3>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
-                        <div style="text-align: center;">
-                            <i class="fas fa-money-bill-wave" style="font-size: 1.5rem; color: var(--success); margin-bottom: 10px;"></i>
-                            <p style="font-size: 0.9rem;">Real Cash Rewards</p>
-                        </div>
-                        <div style="text-align: center;">
-                            <i class="fas fa-clock" style="font-size: 1.5rem; color: var(--accent); margin-bottom: 10px;"></i>
-                            <p style="font-size: 0.9rem;">Only 2 Minutes Daily</p>
-                        </div>
-                        <div style="text-align: center;">
-                            <i class="fas fa-user-friends" style="font-size: 1.5rem; color: var(--warning); margin-bottom: 10px;"></i>
-                            <p style="font-size: 0.9rem;">Referral Bonuses</p>
-                        </div>
-                        <div style="text-align: center;">
-                            <i class="fas fa-shield-alt" style="font-size: 1.5rem; color: var(--primary); margin-bottom: 10px;"></i>
-                            <p style="font-size: 0.9rem;">Secure Platform</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AD 5 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-
-                <!-- Contact Section -->
-                <div class="content-card" style="text-align: center;">
-                    <h3 style="margin-bottom: 10px; color: var(--accent);">Need Help?</h3>
-                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 15px; font-size: 0.9rem;">
-                        Contact us for any queries or support
-                    </p>
-                    <button id="contact-btn" class="contact-btn">
-                        <i class="fas fa-envelope"></i> Contact Support
-                    </button>
-                </div>
-            </section>
-
-            <!-- Rewards Section -->
-            <section id="rewards-section" class="content-section">
-                <div class="reward-card">
-                    <div class="reward-header">
-                        <i class="fas fa-award"></i>
-                        <div>
-                            <h3>30-Day Reward Program</h3>
-                            <p>Complete 30 days for reward</p>
-                        </div>
-                    </div>
-                    
-                    <div class="progress-container">
-                        <div class="progress-info">
-                            <span>Progress: <strong id="progress-days">0</strong>/30</span>
-                            <span id="progress-percent">0%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div id="progress-fill" class="progress-fill"></div>
-                        </div>
-                    </div>
-                    
-                    <div id="reward-status" class="reward-status">
-                        <i class="fas fa-info-circle"></i>
-                        <h4 id="reward-status-title">Not Eligible</h4>
-                        <p id="reward-message">Complete 30 days to become eligible</p>
-                    </div>
-                    
-                    <div id="reward-form" class="reward-form" style="display: none;">
-                        <div class="form-group">
-                            <label for="upi-id">Enter UPI ID</label>
-                            <input type="text" id="upi-id" placeholder="name@upi">
-                            <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 5px;">
-                                Reward will be sent within 3 days
-                            </small>
-                        </div>
-                        <button id="request-reward-btn" class="btn btn-success">
-                            <i class="fas fa-paper-plane"></i> Request Reward
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- AD 6 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-
-                <!-- Reward Info -->
-                <div class="content-card">
-                    <h3 style="margin-bottom: 15px; color: var(--accent);">Reward Information</h3>
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-calendar-check" style="color: var(--success);"></i>
-                            <span>Complete 30 active days (not calendar days)</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-clock" style="color: var(--warning);"></i>
-                            <span>Reward processed within 3 business days</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-money-check-alt" style="color: var(--accent);"></i>
-                            <span>Direct UPI transfer to your account</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-history" style="color: var(--primary);"></i>
-                            <span>Track reward status in real-time</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AD 7 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-            </section>
-
-            <!-- Referral Section -->
-            <section id="referral-section" class="content-section">
-                <div class="referral-card">
-                    <div class="reward-header">
-                        <i class="fas fa-user-plus"></i>
-                        <div>
-                            <h3>Refer & Earn</h3>
-                            <p>Invite friends, earn points</p>
-                        </div>
-                    </div>
-                    
-                    <div class="referral-code" id="referral-code">
-                        CK30-LOADING
-                    </div>
-                    
-                    <button id="copy-referral-btn" class="btn btn-secondary" style="margin-bottom: 15px;">
-                        <i class="fas fa-copy"></i> Copy Code
-                    </button>
-                    
-                    <div class="referral-stats">
-                        <div class="referral-stat">
-                            <h4 id="total-referrals">0</h4>
-                            <p>Total Referrals</p>
-                        </div>
-                        <div class="referral-stat">
-                            <h4 id="referral-earnings">0</h4>
-                            <p>Points Earned</p>
-                        </div>
-                        <div class="referral-stat">
-                            <h4 id="monthly-limit">5</h4>
-                            <p>Monthly Limit</p>
-                        </div>
-                        <div class="referral-stat">
-                            <h4 id="referrals-left">5</h4>
-                            <p>Left This Month</p>
-                        </div>
-                    </div>
-                    
-                    <div class="referral-rules">
-                        <h4>Referral Rules:</h4>
-                        <ul style="list-style: none; padding-left: 0;">
-                            <li>✓ Each user gets unique code</li>
-                            <li>✓ Earn +5 points per referral</li>
-                            <li>✓ Max 5 referrals per month</li>
-                            <li>✓ Friend must complete 3 check-ins</li>
-                            <li>✓ Points added automatically</li>
-                            <li>✓ Track referrals in real-time</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <!-- AD 8 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-
-                <!-- Share Tips -->
-                <div class="content-card">
-                    <h3 style="margin-bottom: 15px; color: var(--accent);">Share & Earn Tips</h3>
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-share-alt" style="color: var(--primary);"></i>
-                            <span>Share on WhatsApp with friends</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-comment" style="color: var(--success);"></i>
-                            <span>Post on social media groups</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-users" style="color: var(--warning);"></i>
-                            <span>Tell your friends in person</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-bullhorn" style="color: var(--accent);"></i>
-                            <span>Share in online communities</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AD 9 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-            </section>
-
-            <!-- Profile Section -->
-            <section id="profile-section" class="content-section">
-                <div class="profile-card">
-                    <div class="profile-header">
-                        <div class="profile-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="profile-info">
-                            <h3 id="profile-email">user@example.com</h3>
-                            <p>Member since <span id="join-date">...</span></p>
-                        </div>
-                    </div>
-                    
-                    <div class="profile-details">
-                        <div class="detail-item">
-                            <span>Total Points:</span>
-                            <strong id="profile-points">0</strong>
-                        </div>
-                        <div class="detail-item">
-                            <span>Active Days:</span>
-                            <strong id="profile-active-days">0</strong>
-                        </div>
-                        <div class="detail-item">
-                            <span>Current Streak:</span>
-                            <strong id="profile-streak">0 days</strong>
-                        </div>
-                        <div class="detail-item">
-                            <span>Last Check-in:</span>
-                            <strong id="last-checkin">Never</strong>
-                        </div>
-                        <div class="detail-item">
-                            <span>Reward Status:</span>
-                            <strong id="profile-reward-status">Not Eligible</strong>
-                        </div>
-                        <div class="detail-item">
-                            <span>Referral Code:</span>
-                            <strong id="profile-referral-code">Loading...</strong>
-                        </div>
-                        <div class="detail-item">
-                            <span>Total Earnings:</span>
-                            <strong id="total-earnings">0 points</strong>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <button id="reset-timer-btn" class="btn" style="flex: 1; background: rgba(255, 255, 255, 0.1);">
-                            <i class="fas fa-redo"></i> Reset Timer
-                        </button>
-                        <button id="logout-btn" class="btn btn-primary" style="flex: 1;">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- AD 10 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-
-                <!-- Account Info -->
-                <div class="content-card">
-                    <h3 style="margin-bottom: 15px; color: var(--accent);">Account Information</h3>
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>Account Created:</span>
-                            <span id="account-created">Loading...</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>Days Active:</span>
-                            <span id="days-active">0 days</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>Current Month Referrals:</span>
-                            <span id="current-month-refs">0</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>All Time Referrals:</span>
-                            <span id="all-time-refs">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AD 11 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-
-                <!-- Support -->
-                <div class="content-card" style="text-align: center;">
-                    <h3 style="margin-bottom: 10px; color: var(--accent);">Support Center</h3>
-                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 15px; font-size: 0.9rem;">
-                        Having issues? Contact our support team
-                    </p>
-                    <button onclick="window.open('mailto:gotmprajapat00@gmail.com')" class="contact-btn">
-                        <i class="fas fa-headset"></i> Get Help
-                    </button>
-                </div>
-
-                <!-- AD 12 -->
-                <div class="ad-banner-container">
-                    <script>
-                        atOptions = {
-                            'key' : 'fea0b6b8341d1077ececb2db811f2e68',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                        };
-                    </script>
-                    <script src="https://www.highperformanceformat.com/fea0b6b8341d1077ececb2db811f2e68/invoke.js"></script>
-                </div>
-            </section>
-        </main>
-
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <button class="nav-item active" data-section="home">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
+            
+            <!-- Native Ad for Check-in -->
+            <div style="text-align: center; margin: 30px 0;">
+                <div class="ad-label">Sponsored Content</div>
+                <script async="async" data-cfasync="false" src="https://pl28624266.effectivegatecpm.com/6bc4ee56d47d8bd07693b3f7aff17fd1/invoke.js"></script> 
+                <div id="container-6bc4ee56d47d8bd07693b3f7aff17fd1"></div>
+            </div>
+            
+            <button class="submit-btn" id="complete-checkin-btn" disabled>
+                <i class="fas fa-check-circle"></i> Complete Check-in (<span id="checkin-countdown">5</span>)
             </button>
-            <button class="nav-item" data-section="rewards">
-                <i class="fas fa-gift"></i>
-                <span>Rewards</span>
-            </button>
-            <button class="nav-item" data-section="referral">
-                <i class="fas fa-users"></i>
-                <span>Referral</span>
-            </button>
-            <button class="nav-item" data-section="profile">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
-            </button>
-        </nav>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>© 2024 CheckIn30 - Daily Rewards Platform</p>
-            <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.5;">
-                Complete 30 daily check-ins and claim your reward
-            </p>
-        </footer>
-    </div>
-
-    <!-- Popup Modals -->
-    
-    <!-- Welcome Popup -->
-    <div id="welcome-popup" class="popup-overlay">
-        <div class="popup-content">
-            <div class="popup-header">
-                <h3>🎉 Welcome to CheckIn30!</h3>
-                <button class="popup-close" onclick="closePopup('welcome-popup')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="popup-body">
-                <p>To unlock daily check-in, please explore our website for <strong>2 minutes</strong>.</p>
-                <div class="popup-ad">
-                    <p>Advertisement Loading...</p>
-                </div>
-                <p style="text-align: center; margin-top: 20px; color: var(--accent);">
-                    <i class="fas fa-info-circle"></i> Timer starts automatically
-                </p>
-                <button class="btn btn-primary" style="margin-top: 25px;" onclick="closePopup('welcome-popup')">
-                    <i class="fas fa-check"></i> Start Exploring
-                </button>
-            </div>
         </div>
     </div>
 
-    <!-- Daily Visit Popup -->
-    <div id="visit-popup" class="popup-overlay">
-        <div class="popup-content">
-            <div class="popup-header">
-                <h3>⏰ Daily Visit Required</h3>
-                <button class="popup-close" onclick="closePopup('visit-popup')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="popup-body">
-                <p>Visit required to maintain your streak! Browse website to unlock check-in.</p>
-                
-                <div class="popup-ad">
-                    <p>Advertisement Loading...</p>
-                </div>
-                
-                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.95rem; margin-top: 20px;">
-                    <i class="fas fa-exclamation-circle"></i> Already visited today? You can still browse.
-                </p>
-                
-                <button class="btn btn-secondary" style="margin-top: 25px;" onclick="closePopup('visit-popup')">
-                    <i class="fas fa-eye"></i> Continue Browsing
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Check-in Popup -->
-    <div id="checkin-popup" class="popup-overlay">
-        <div class="popup-content">
-            <div class="popup-header">
-                <h3>✅ Daily Check-in</h3>
-                <button class="popup-close" id="checkin-close-btn" disabled>
-                    <i class="fas fa-times"></i> Close (5s)
-                </button>
-            </div>
-            <div class="popup-body">
-                <p>Complete your daily check-in to earn points and maintain streak!</p>
-                
-                <div class="popup-ad">
-                    <script async="async" data-cfasync="false" src="https://pl28624266.effectivegatecpm.com/6bc4ee56d47d8bd07693b3f7aff17fd1/invoke.js"></script>
-                    <div id="container-6bc4ee56d47d8bd07693b3f7aff17fd1"></div>
-                </div>
-                
-                <div style="text-align: center; margin: 25px 0; padding: 20px; background: rgba(76, 201, 240, 0.1); border-radius: 15px;">
-                    <i class="fas fa-gift fa-3x" style="color: var(--accent);"></i>
-                    <h4 style="margin-top: 15px; color: white;">+10 Points Reward</h4>
-                    <p style="color: rgba(255, 255, 255, 0.7);">Complete check-in to claim your points</p>
-                </div>
-                
-                <!-- Timer Progress in Popup -->
-                <div style="margin: 20px 0;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <span>Timer Progress:</span>
-                        <span id="popup-timer-display">5 seconds</span>
-                    </div>
-                    <div style="height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden;">
-                        <div id="popup-timer-bar" style="height: 100%; background: linear-gradient(90deg, var(--accent), var(--primary)); width: 0%; border-radius: 4px;"></div>
-                    </div>
-                </div>
-                
-                <p style="text-align: center; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
-                    Close button will be enabled in <span id="countdown-text" style="color: var(--accent); font-weight: bold;">5</span> seconds
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contact Popup -->
-    <div id="contact-popup" class="popup-overlay">
-        <div class="popup-content">
-            <div class="popup-header">
-                <h3>📧 Contact Support</h3>
-                <button class="popup-close" onclick="closePopup('contact-popup')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="popup-body">
-                <p>For any queries, support, or issues, please email us:</p>
-                
-                <div style="text-align: center; margin: 30px 0; padding: 25px; background: rgba(76, 201, 240, 0.1); border-radius: 20px;">
-                    <i class="fas fa-envelope fa-3x" style="color: var(--accent);"></i>
-                    <h3 style="margin-top: 20px;">
-                        <a href="mailto:gotmprajapat00@gmail.com" style="color: var(--accent); text-decoration: none; font-size: 1.5rem;">
-                            gotmprajapat00@gmail.com
-                        </a>
-                    </h3>
-                </div>
-                
-                <p>We'll respond to your query within 24 hours.</p>
-                
-                <button class="btn btn-primary" style="margin-top: 25px;" onclick="window.open('mailto:gotmprajapat00@gmail.com')">
-                    <i class="fas fa-paper-plane"></i> Send Email Now
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"></div>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
     <script>
         // Firebase Configuration
@@ -1689,65 +1324,53 @@
         let currentUser = null;
         let userData = null;
         let timerInterval = null;
-        let timeLeft = 120; // 2 minutes in seconds
-        let timerActive = false;
-        let activityDetected = false;
-        let lastActivityTime = Date.now();
-        let hasShownWelcomePopup = false;
-        let hasShownVisitPopup = false;
-        let checkinCountdown = null;
-        let popupCountdown = 5;
+        let checkinTimer = null;
+        let timeLeft = 120; // 2 minutes
+        let checkinTimeLeft = 5;
+        let isTimerRunning = false;
+        let isCheckinReady = false;
 
-        // Initialize Application
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             initializeEventListeners();
             checkAuthState();
-            setupActivityDetection();
+            generateStreakDays();
+            updateUIForGuest();
         });
 
         // Event Listeners
         function initializeEventListeners() {
-            // Auth Tabs
-            document.querySelectorAll('.auth-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabName = tab.dataset.tab;
-                    switchAuthTab(tabName);
-                });
+            // Header buttons
+            document.getElementById('login-header-btn').addEventListener('click', () => openModal('login-modal'));
+            document.getElementById('register-header-btn').addEventListener('click', () => openModal('register-modal'));
+            
+            // Login form
+            document.getElementById('login-submit-btn').addEventListener('click', handleLogin);
+            
+            // Register form
+            document.getElementById('register-submit-btn').addEventListener('click', handleRegister);
+            
+            // Timer button
+            document.getElementById('start-timer-btn').addEventListener('click', startTimer);
+            
+            // Check-in button
+            document.getElementById('daily-checkin-btn').addEventListener('click', openCheckinModal);
+            
+            // Complete check-in button
+            document.getElementById('complete-checkin-btn').addEventListener('click', completeCheckin);
+            
+            // Contact buttons
+            document.getElementById('contact-support-btn').addEventListener('click', contactSupport);
+            document.getElementById('profile-contact-btn').addEventListener('click', contactSupport);
+            
+            // Enter key for forms
+            document.getElementById('login-password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
             });
-
-            // Auth Buttons
-            document.getElementById('login-btn').addEventListener('click', handleLogin);
-            document.getElementById('register-btn').addEventListener('click', handleRegister);
-
-            // Navigation
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    switchSection(item.dataset.section);
-                });
+            
+            document.getElementById('register-password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleRegister();
             });
-
-            // Check-in Button
-            document.getElementById('checkin-btn').addEventListener('click', openCheckinPopup);
-
-            // Copy Referral Code
-            document.getElementById('copy-referral-btn').addEventListener('click', copyReferralCode);
-
-            // Request Reward
-            document.getElementById('request-reward-btn').addEventListener('click', handleRewardRequest);
-
-            // Reset Timer
-            document.getElementById('reset-timer-btn').addEventListener('click', resetDailyTimer);
-
-            // Logout
-            document.getElementById('logout-btn').addEventListener('click', handleLogout);
-
-            // Contact Button
-            document.getElementById('contact-btn').addEventListener('click', () => {
-                openPopup('contact-popup');
-            });
-
-            // Check-in Close Button
-            document.getElementById('checkin-close-btn').addEventListener('click', completeCheckin);
         }
 
         // Check Auth State
@@ -1757,23 +1380,23 @@
                     currentUser = user;
                     loadUserData();
                 } else {
-                    showScreen('auth');
+                    currentUser = null;
+                    userData = null;
+                    updateUIForGuest();
                 }
             });
         }
 
-        // Switch Auth Tab
-        function switchAuthTab(tabName) {
-            document.querySelectorAll('.auth-tab').forEach(tab => {
-                tab.classList.toggle('active', tab.dataset.tab === tabName);
-            });
-            
-            document.querySelectorAll('.auth-form').forEach(form => {
-                form.classList.toggle('active', form.id === `${tabName}-form`);
-            });
-            
-            document.getElementById('login-error').textContent = '';
-            document.getElementById('register-error').textContent = '';
+        // Open Modal
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close Modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
         // Handle Login
@@ -1781,39 +1404,40 @@
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             const errorElement = document.getElementById('login-error');
-            const button = document.getElementById('login-btn');
+            const button = document.getElementById('login-submit-btn');
 
+            // Clear previous error
+            errorElement.textContent = '';
+
+            // Validation
             if (!email || !password) {
                 errorElement.textContent = 'Please enter both email and password';
                 return;
             }
 
             try {
+                // Show loading
                 button.disabled = true;
+                const originalText = button.innerHTML;
                 button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-                
+
+                // Firebase login
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                const user = userCredential.user;
                 
                 // Clear form
                 document.getElementById('login-email').value = '';
                 document.getElementById('login-password').value = '';
                 
-                // Show success
-                errorElement.textContent = 'Login successful! Loading dashboard...';
-                errorElement.style.color = '#2ecc71';
+                // Close modal
+                closeModal('login-modal');
                 
-                // Automatically redirect to dashboard after success
-                setTimeout(() => {
-                    if (user) {
-                        currentUser = user;
-                        loadUserData();
-                    }
-                }, 1000);
+                // Show success
+                showToast('Login successful! Welcome back.');
                 
             } catch (error) {
                 console.error('Login error:', error);
-                let errorMessage = 'Login failed. Please check credentials.';
+                
+                let errorMessage = 'Login failed. Please try again.';
                 
                 switch (error.code) {
                     case 'auth/user-not-found':
@@ -1828,8 +1452,6 @@
                 }
                 
                 errorElement.textContent = errorMessage;
-                errorElement.style.color = '#e74c3c';
-                
                 button.disabled = false;
                 button.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
             }
@@ -1839,10 +1461,14 @@
         async function handleRegister() {
             const email = document.getElementById('register-email').value.trim();
             const password = document.getElementById('register-password').value;
-            const referralCode = document.getElementById('referral-code-input').value.trim();
+            const referralCode = document.getElementById('referral-code').value.trim();
             const errorElement = document.getElementById('register-error');
-            const button = document.getElementById('register-btn');
+            const button = document.getElementById('register-submit-btn');
 
+            // Clear previous error
+            errorElement.textContent = '';
+
+            // Validation
             if (!email || !password) {
                 errorElement.textContent = 'Please enter both email and password';
                 return;
@@ -1854,14 +1480,17 @@
             }
 
             try {
+                // Show loading
                 button.disabled = true;
+                const originalText = button.innerHTML;
                 button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
-                
+
+                // Create user with Firebase
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
                 
                 // Generate referral code
-                const userReferralCode = 'CK30-' + generateRandomCode(6);
+                const userReferralCode = generateReferralCode();
                 
                 // Prepare user data
                 const userData = {
@@ -1884,33 +1513,28 @@
                     totalEarnings: 0
                 };
 
-                // Save user data to database
+                // Save user data
                 await database.ref(`users/${user.uid}`).set(userData);
                 
                 // Clear form
                 document.getElementById('register-email').value = '';
                 document.getElementById('register-password').value = '';
-                document.getElementById('referral-code-input').value = '';
+                document.getElementById('referral-code').value = '';
+                
+                // Close modal
+                closeModal('register-modal');
                 
                 // Show success
-                errorElement.textContent = 'Account created successfully! Redirecting...';
-                errorElement.style.color = '#2ecc71';
-                
-                // Automatically redirect to dashboard after registration
-                setTimeout(() => {
-                    if (user) {
-                        currentUser = user;
-                        loadUserData();
-                    }
-                }, 1000);
+                showToast('Account created successfully! Welcome to CheckIn30.');
                 
             } catch (error) {
                 console.error('Registration error:', error);
+                
                 let errorMessage = 'Registration failed. Please try again.';
                 
                 switch (error.code) {
                     case 'auth/email-already-in-use':
-                        errorMessage = 'Email already registered. Please login.';
+                        errorMessage = 'Email already registered. Please login instead.';
                         break;
                     case 'auth/invalid-email':
                         errorMessage = 'Invalid email format.';
@@ -1921,8 +1545,6 @@
                 }
                 
                 errorElement.textContent = errorMessage;
-                errorElement.style.color = '#e74c3c';
-                
                 button.disabled = false;
                 button.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
             }
@@ -1937,7 +1559,8 @@
                 userData = snapshot.val();
                 
                 if (!userData) {
-                    const userReferralCode = 'CK30-' + generateRandomCode(6);
+                    // Create user data if it doesn't exist
+                    const userReferralCode = generateReferralCode();
                     userData = {
                         email: currentUser.email,
                         points: 0,
@@ -1961,632 +1584,136 @@
                     await database.ref(`users/${currentUser.uid}`).set(userData);
                 }
                 
-                updateUI();
-                showScreen('app');
-                
-                // Show popups
-                showWelcomePopup();
-                showVisitPopup();
-                
-                checkDailyCheckin();
-                startVisitTimer();
+                updateUIForUser();
                 
             } catch (error) {
                 console.error('Error loading user data:', error);
-                showToast('Error loading data. Please refresh.');
             }
         }
 
-        // Update UI with User Data
-        function updateUI() {
-            if (!userData) return;
+        // Update UI for Guest
+        function updateUIForGuest() {
+            // Update timer button
+            document.getElementById('start-timer-btn').disabled = true;
+            document.getElementById('start-timer-btn').innerHTML = '<i class="fas fa-play"></i> Start Timer (Login Required)';
+            
+            // Update check-in button
+            document.getElementById('daily-checkin-btn').disabled = true;
+            document.getElementById('daily-checkin-btn').innerHTML = '<i class="fas fa-lock"></i> Login to Check-in';
+            
+            // Update profile
+            document.getElementById('profile-name').textContent = 'Guest User';
+            document.getElementById('profile-email').textContent = 'Login to view your profile';
+            document.getElementById('account-status').textContent = 'Not Logged In';
+            
+            // Update referral code
+            document.getElementById('referral-code-display').textContent = 'LOGIN TO GET CODE';
+            
+            // Update reward status
+            document.getElementById('reward-status').innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                <h4>Login to Track Progress</h4>
+                <p>Sign in to start your 30-day journey</p>
+            `;
+            
+            // Reset timer display
+            document.getElementById('timer-display').textContent = '2:00';
+            document.getElementById('progress-fill').style.width = '0%';
+            document.getElementById('time-spent').textContent = '0:00';
+        }
 
-            document.getElementById('user-greeting').textContent = `Welcome, ${userData.email.split('@')[0]}!`;
-            document.getElementById('user-email').textContent = userData.email;
+        // Update UI for User
+        function updateUIForUser() {
+            if (!currentUser || !userData) return;
+
+            // Update profile
+            document.getElementById('profile-name').textContent = userData.email.split('@')[0];
             document.getElementById('profile-email').textContent = userData.email;
-            document.getElementById('user-points').textContent = userData.points || 0;
-            document.getElementById('profile-points').textContent = userData.points || 0;
+            document.getElementById('account-status').textContent = 'Active';
             
-            const streak = calculateStreak();
-            const activeDays = userData.activeDays || 0;
-            const daysLeft = Math.max(0, 30 - activeDays);
+            // Update timer button
+            document.getElementById('start-timer-btn').disabled = false;
+            document.getElementById('start-timer-btn').innerHTML = '<i class="fas fa-play"></i> Start Timer';
             
-            document.getElementById('streak-days').textContent = streak;
-            document.getElementById('active-days').textContent = activeDays;
-            document.getElementById('days-left').textContent = daysLeft;
-            document.getElementById('profile-active-days').textContent = activeDays;
-            document.getElementById('profile-streak').textContent = streak + ' days';
-            document.getElementById('total-earnings').textContent = (userData.totalEarnings || 0) + ' points';
-            
-            // Update reward status icon
-            const rewardIcon = document.getElementById('reward-status-icon');
-            const rewardStatus = userData.rewardStatus || 'NOT_ELIGIBLE';
-            
-            if (rewardStatus === 'COMPLETED') {
-                rewardIcon.textContent = '✅';
-                rewardIcon.style.color = '#2ecc71';
-            } else if (rewardStatus === 'PENDING') {
-                rewardIcon.textContent = '⏳';
-                rewardIcon.style.color = '#f39c12';
-            } else if (activeDays >= 30) {
-                rewardIcon.textContent = '🎁';
-                rewardIcon.style.color = '#9b59b6';
-            } else {
-                rewardIcon.textContent = '❌';
-                rewardIcon.style.color = '#e74c3c';
-            }
-            
-            // Update last check-in
+            // Update check-in button
+            const checkinBtn = document.getElementById('daily-checkin-btn');
             if (userData.lastCheckIn) {
-                const lastCheckin = new Date(userData.lastCheckIn);
-                const now = new Date();
-                const diffHours = Math.floor((now - lastCheckin) / (1000 * 60 * 60));
-                
-                if (diffHours < 24) {
-                    document.getElementById('last-checkin').textContent = 'Today';
-                } else if (diffHours < 48) {
-                    document.getElementById('last-checkin').textContent = 'Yesterday';
-                } else {
-                    document.getElementById('last-checkin').textContent = lastCheckin.toLocaleDateString();
-                }
-            } else {
-                document.getElementById('last-checkin').textContent = 'Never';
-            }
-            
-            // Update join date
-            if (userData.joinDate) {
-                const joinDate = new Date(userData.joinDate);
-                document.getElementById('join-date').textContent = joinDate.toLocaleDateString();
-                document.getElementById('account-created').textContent = joinDate.toLocaleDateString();
-            }
-            
-            // Update profile reward status
-            document.getElementById('profile-reward-status').textContent = getRewardStatusText(rewardStatus);
-            
-            // Update referral section
-            document.getElementById('referral-code').textContent = userData.referralCode || 'CK30-LOADING';
-            document.getElementById('profile-referral-code').textContent = userData.referralCode || 'Loading...';
-            document.getElementById('total-referrals').textContent = userData.referrals || 0;
-            document.getElementById('referral-earnings').textContent = userData.referralPoints || 0;
-            document.getElementById('all-time-refs').textContent = userData.referrals || 0;
-            
-            const currentMonth = new Date().getMonth();
-            const monthlyReferrals = (userData.lastReferralMonth === currentMonth) ? (userData.monthlyReferrals || 0) : 0;
-            const referralsLeft = Math.max(0, 5 - monthlyReferrals);
-            document.getElementById('referrals-left').textContent = referralsLeft;
-            document.getElementById('current-month-refs').textContent = monthlyReferrals;
-            
-            // Update days active
-            document.getElementById('days-active').textContent = activeDays + ' days';
-            
-            updateRewardsSection();
-        }
-
-        // Calculate Streak
-        function calculateStreak() {
-            if (!userData || !userData.lastCheckIn) return 0;
-            
-            const lastCheckIn = new Date(userData.lastCheckIn);
-            const today = new Date();
-            const yesterday = new Date(today);
-            yesterday.setDate(yesterday.getDate() - 1);
-            
-            lastCheckIn.setHours(0, 0, 0, 0);
-            today.setHours(0, 0, 0, 0);
-            yesterday.setHours(0, 0, 0, 0);
-            
-            if (lastCheckIn.getTime() === today.getTime()) {
-                return userData.streak || 1;
-            } else if (lastCheckIn.getTime() === yesterday.getTime()) {
-                return (userData.streak || 1);
-            } else {
-                return 0;
-            }
-        }
-
-        // Show Welcome Popup
-        function showWelcomePopup() {
-            if (!hasShownWelcomePopup) {
-                setTimeout(() => {
-                    openPopup('welcome-popup');
-                    hasShownWelcomePopup = true;
-                }, 1000);
-            }
-        }
-
-        // Show Visit Popup
-        function showVisitPopup() {
-            if (!hasShownVisitPopup) {
-                setTimeout(() => {
-                    openPopup('visit-popup');
-                    hasShownVisitPopup = true;
-                }, 1500);
-            }
-        }
-
-        // Open Popup
-        function openPopup(popupId) {
-            const popup = document.getElementById(popupId);
-            if (popup) {
-                popup.classList.add('active');
-                document.body.style.overflow = 'hidden';
-                
-                // Start countdown for check-in popup
-                if (popupId === 'checkin-popup') {
-                    startCheckinCountdown();
-                }
-            }
-        }
-
-        // Close Popup
-        function closePopup(popupId) {
-            const popup = document.getElementById(popupId);
-            if (popup) {
-                popup.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        // Start Check-in Countdown in Popup
-        function startCheckinCountdown() {
-            popupCountdown = 5;
-            const countdownElement = document.getElementById('countdown-text');
-            const closeButton = document.getElementById('checkin-close-btn');
-            const timerDisplay = document.getElementById('popup-timer-display');
-            const timerBar = document.getElementById('popup-timer-bar');
-            
-            if (checkinCountdown) clearInterval(checkinCountdown);
-            
-            checkinCountdown = setInterval(() => {
-                popupCountdown--;
-                countdownElement.textContent = popupCountdown;
-                timerDisplay.textContent = popupCountdown + ' seconds';
-                timerBar.style.width = ((5 - popupCountdown) / 5 * 100) + '%';
-                closeButton.innerHTML = `<i class="fas fa-times"></i> Close (${popupCountdown}s)`;
-                
-                if (popupCountdown <= 0) {
-                    clearInterval(checkinCountdown);
-                    closeButton.disabled = false;
-                    closeButton.innerHTML = '<i class="fas fa-times"></i> Close & Complete';
-                    closeButton.style.background = 'var(--primary)';
-                }
-            }, 1000);
-        }
-
-        // Start Visit Timer
-        function startVisitTimer() {
-            if (userData && userData.lastCheckIn) {
                 const lastCheckIn = new Date(userData.lastCheckIn);
                 const today = new Date();
                 
-                lastCheckIn.setHours(0, 0, 0, 0);
-                today.setHours(0, 0, 0, 0);
-                
-                if (lastCheckIn.getTime() === today.getTime()) {
-                    updateCheckinButton(true);
-                    return;
-                }
-            }
-            
-            timerActive = true;
-            timeLeft = 120;
-            updateTimerDisplay();
-            
-            timerInterval = setInterval(() => {
-                if (activityDetected) {
-                    timeLeft--;
-                    
-                    if (timeLeft <= 0) {
-                        stopTimer();
-                        unlockCheckinButton();
-                    } else {
-                        updateTimerDisplay();
-                    }
-                }
-            }, 1000);
-        }
-
-        // Stop Timer
-        function stopTimer() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-            timerActive = false;
-        }
-
-        // Update Timer Display
-        function updateTimerDisplay() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            
-            document.getElementById('timer-display').textContent = 
-                `${minutes}:${seconds.toString().padStart(2, '0')} / 2:00`;
-            
-            const progress = ((120 - timeLeft) / 120) * 100;
-            document.getElementById('timer-fill').style.width = `${progress}%`;
-            
-            if (timeLeft > 0) {
-                document.getElementById('timer-message').textContent = 
-                    `⏳ Explore website to unlock check-in (${minutes}:${seconds.toString().padStart(2, '0')} left)`;
-            }
-        }
-
-        // Setup Activity Detection
-        function setupActivityDetection() {
-            const activityEvents = ['mousemove', 'touchstart', 'scroll', 'click', 'keydown'];
-            
-            activityEvents.forEach(event => {
-                document.addEventListener(event, () => {
-                    activityDetected = true;
-                    lastActivityTime = Date.now();
-                }, { passive: true });
-            });
-            
-            setInterval(() => {
-                const inactiveTime = Date.now() - lastActivityTime;
-                if (inactiveTime > 10000 && timerActive) {
-                    activityDetected = false;
-                    document.getElementById('timer-message').textContent = 
-                        '⏳ Timer paused - interact with website to continue';
-                }
-            }, 5000);
-        }
-
-        // Unlock Check-in Button
-        function unlockCheckinButton() {
-            const button = document.getElementById('checkin-btn');
-            button.disabled = false;
-            button.innerHTML = '<i class="fas fa-unlock"></i> Daily Check-in Available';
-            button.className = 'btn btn-success';
-            document.getElementById('timer-message').textContent = '✅ Daily Check-in Available!';
-            
-            showToast('🎉 Daily check-in unlocked! Click to claim your reward.');
-        }
-
-        // Update Check-in Button
-        function updateCheckinButton(completed) {
-            const button = document.getElementById('checkin-btn');
-            if (completed) {
-                button.disabled = true;
-                button.innerHTML = '<i class="fas fa-check-circle"></i> Already Checked-in Today';
-                button.className = 'btn';
-                document.getElementById('timer-message').textContent = '✅ Daily check-in completed';
-            }
-        }
-
-        // Open Check-in Popup
-        function openCheckinPopup() {
-            openPopup('checkin-popup');
-        }
-
-        // Complete Check-in
-        async function completeCheckin() {
-            try {
-                if (!currentUser || !userData) {
-                    showToast('Error: User not found');
-                    return;
-                }
-                
-                const today = new Date();
-                const lastCheckIn = userData.lastCheckIn ? new Date(userData.lastCheckIn) : null;
-                
-                if (lastCheckIn) {
-                    lastCheckIn.setHours(0, 0, 0, 0);
-                    today.setHours(0, 0, 0, 0);
-                    
-                    if (lastCheckIn.getTime() === today.getTime()) {
-                        showToast('You have already checked in today!');
-                        closePopup('checkin-popup');
-                        return;
-                    }
-                }
-                
-                let streak = calculateStreak();
-                if (lastCheckIn) {
-                    const yesterday = new Date(today);
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    yesterday.setHours(0, 0, 0, 0);
-                    
-                    if (lastCheckIn.getTime() === yesterday.getTime()) {
-                        streak += 1;
-                    } else {
-                        streak = 1;
-                    }
+                if (lastCheckIn.toDateString() === today.toDateString()) {
+                    checkinBtn.disabled = true;
+                    checkinBtn.innerHTML = '<i class="fas fa-check-circle"></i> Already Checked-in Today';
                 } else {
-                    streak = 1;
+                    checkinBtn.disabled = !isCheckinReady;
+                    checkinBtn.innerHTML = isCheckinReady ? 
+                        '<i class="fas fa-unlock"></i> Daily Check-in Available' : 
+                        '<i class="fas fa-lock"></i> Complete Timer First';
                 }
-                
-                const basePoints = 10;
-                const streakBonus = streak >= 3 ? 5 : 0;
-                const pointsEarned = basePoints + streakBonus;
-                const newPoints = (userData.points || 0) + pointsEarned;
-                const newActiveDays = (userData.activeDays || 0) + 1;
-                const totalEarnings = (userData.totalEarnings || 0) + pointsEarned;
-                
-                const updates = {
-                    lastCheckIn: new Date().toISOString(),
-                    activeDays: newActiveDays,
-                    points: newPoints,
-                    streak: streak,
-                    totalEarnings: totalEarnings
-                };
-                
-                await database.ref(`users/${currentUser.uid}`).update(updates);
-                
-                Object.assign(userData, updates);
-                updateUI();
-                
-                let message = `✅ Daily check-in completed! +${basePoints} points earned.`;
-                if (streakBonus > 0) {
-                    message += ` +${streakBonus} streak bonus!`;
-                }
-                showToast(message);
-                
-                closePopup('checkin-popup');
-                updateCheckinButton(true);
-                stopTimer();
-                
-                if (userData.referredBy && !userData.referralRewarded) {
-                    await checkAndRewardReferrer();
-                }
-                
-                if (newActiveDays === 30) {
-                    setTimeout(() => {
-                        showToast('🎉 Congratulations! You completed 30 days!');
-                    }, 1000);
-                }
-                
-            } catch (error) {
-                console.error('Error completing check-in:', error);
-                showToast('Error completing check-in. Please try again.');
+            } else {
+                checkinBtn.disabled = !isCheckinReady;
+                checkinBtn.innerHTML = isCheckinReady ? 
+                    '<i class="fas fa-unlock"></i> Daily Check-in Available' : 
+                    '<i class="fas fa-lock"></i> Complete Timer First';
             }
-        }
-
-        // Check and Reward Referrer
-        async function checkAndRewardReferrer() {
-            if (!userData || !userData.referredBy || userData.referralRewarded) return;
             
-            try {
-                if ((userData.activeDays || 0) >= 3) {
-                    const usersSnapshot = await database.ref('users').once('value');
-                    let referrerId = null;
-                    
-                    usersSnapshot.forEach((childSnapshot) => {
-                        const user = childSnapshot.val();
-                        if (user.referralCode === userData.referredBy) {
-                            referrerId = childSnapshot.key;
-                        }
-                    });
-                    
-                    if (!referrerId) return;
-                    
-                    const referrerSnapshot = await database.ref(`users/${referrerId}`).once('value');
-                    const referrerData = referrerSnapshot.val();
-                    
-                    if (!referrerData) return;
-                    
-                    const currentMonth = new Date().getMonth();
-                    const lastRewardMonth = referrerData.lastReferralMonth;
-                    
-                    if (lastRewardMonth === currentMonth && (referrerData.monthlyReferrals || 0) >= 5) {
-                        return;
-                    }
-                    
-                    const referralPoints = 5;
-                    const newReferrerPoints = (referrerData.points || 0) + referralPoints;
-                    const newReferrals = (referrerData.referrals || 0) + 1;
-                    const newMonthlyReferrals = ((referrerData.lastReferralMonth === currentMonth) ? 
-                        (referrerData.monthlyReferrals || 0) : 0) + 1;
-                    const newReferralPoints = (referrerData.referralPoints || 0) + referralPoints;
-                    
-                    await database.ref(`users/${referrerId}`).update({
-                        points: newReferrerPoints,
-                        referrals: newReferrals,
-                        monthlyReferrals: newMonthlyReferrals,
-                        lastReferralMonth: currentMonth,
-                        referralPoints: newReferralPoints
-                    });
-                    
-                    await database.ref(`users/${currentUser.uid}`).update({
-                        referralRewarded: true
-                    });
-                    
-                    if (referrerId === currentUser.uid) {
-                        userData.points = newReferrerPoints;
-                        userData.referrals = newReferrals;
-                        userData.referralPoints = newReferralPoints;
-                        updateUI();
-                        showToast(`🎉 +${referralPoints} points from referral!`);
-                    }
-                }
-            } catch (error) {
-                console.error('Error rewarding referrer:', error);
-            }
-        }
-
-        // Update Rewards Section
-        function updateRewardsSection() {
-            if (!userData) return;
+            // Update referral code
+            document.getElementById('referral-code-display').textContent = userData.referralCode || 'CK30-' + generateRandomCode(6);
             
+            // Update reward progress
             const activeDays = userData.activeDays || 0;
             const progressPercent = Math.min(100, (activeDays / 30) * 100);
-            const rewardStatus = userData.rewardStatus || 'NOT_ELIGIBLE';
             
-            document.getElementById('progress-days').textContent = activeDays;
+            document.getElementById('current-days').textContent = activeDays;
             document.getElementById('progress-percent').textContent = `${Math.round(progressPercent)}%`;
-            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+            document.getElementById('reward-progress').style.width = `${progressPercent}%`;
             
-            const statusElement = document.getElementById('reward-status');
-            const titleElement = document.getElementById('reward-status-title');
-            const messageElement = document.getElementById('reward-message');
-            const formElement = document.getElementById('reward-form');
-            
-            let statusClass = '';
-            let title = '';
-            let message = '';
-            
-            if (rewardStatus === 'NOT_ELIGIBLE') {
-                if (activeDays < 30) {
-                    title = 'Not Eligible Yet';
-                    message = `Complete ${30 - activeDays} more days to become eligible`;
-                    formElement.style.display = 'none';
+            // Update reward status
+            let statusHTML = '';
+            if (activeDays >= 30) {
+                if (userData.rewardStatus === 'COMPLETED') {
+                    statusHTML = `
+                        <i class="fas fa-check-circle" style="color: #2ecc71;"></i>
+                        <h4>Reward Completed!</h4>
+                        <p>Your reward has been sent successfully</p>
+                    `;
+                } else if (userData.rewardStatus === 'PENDING') {
+                    statusHTML = `
+                        <i class="fas fa-hourglass-half" style="color: #f39c12;"></i>
+                        <h4>Reward Processing</h4>
+                        <p>Your reward request is being processed</p>
+                    `;
                 } else {
-                    title = '🎉 Eligible for Reward!';
-                    message = 'You have completed 30 days! Request your reward now.';
-                    formElement.style.display = 'block';
+                    statusHTML = `
+                        <i class="fas fa-gift" style="color: #9b59b6;"></i>
+                        <h4>Eligible for Reward!</h4>
+                        <p>You can now request your reward</p>
+                    `;
                 }
-            } else if (rewardStatus === 'PENDING') {
-                title = '⏳ Reward Processing';
-                const requestDate = new Date(userData.rewardRequestDate);
-                const deliveryDate = new Date(requestDate);
-                deliveryDate.setDate(deliveryDate.getDate() + 3);
-                message = `Reward requested on ${requestDate.toLocaleDateString()}. Will be sent by ${deliveryDate.toLocaleDateString()}.`;
-                formElement.style.display = 'none';
-            } else if (rewardStatus === 'COMPLETED') {
-                title = '✅ Reward Sent!';
-                message = `Reward successfully sent to ${userData.upi || 'your UPI ID'}`;
-                formElement.style.display = 'none';
+            } else {
+                statusHTML = `
+                    <i class="fas fa-info-circle"></i>
+                    <h4>Progress: ${activeDays}/30 Days</h4>
+                    <p>Complete ${30 - activeDays} more days for reward</p>
+                `;
             }
             
-            titleElement.textContent = title;
-            messageElement.textContent = message;
+            document.getElementById('reward-status').innerHTML = statusHTML;
+            
+            // Update streak days
+            updateStreakDays();
         }
 
-        // Handle Reward Request
-        async function handleRewardRequest() {
-            const upiId = document.getElementById('upi-id').value.trim();
+        // Generate Referral Code
+        function generateReferralCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = 'CK30-';
             
-            if (!upiId) {
-                showToast('Please enter your UPI ID');
-                return;
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             
-            if (!upiId.includes('@') || upiId.length < 5) {
-                showToast('Please enter a valid UPI ID');
-                return;
-            }
-            
-            if (!currentUser || !userData) {
-                showToast('Error: User not found');
-                return;
-            }
-            
-            if ((userData.activeDays || 0) < 30) {
-                showToast('You need 30 active days to request reward');
-                return;
-            }
-            
-            if (userData.rewardStatus === 'PENDING' || userData.rewardStatus === 'COMPLETED') {
-                showToast('You have already requested or received your reward');
-                return;
-            }
-            
-            try {
-                const button = document.getElementById('request-reward-btn');
-                button.disabled = true;
-                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-                
-                const rewardRequestDate = new Date().toISOString();
-                const deliveryDate = new Date();
-                deliveryDate.setDate(deliveryDate.getDate() + 3);
-                
-                const updates = {
-                    rewardStatus: 'PENDING',
-                    rewardRequestDate: rewardRequestDate,
-                    upi: upiId
-                };
-                
-                await database.ref(`users/${currentUser.uid}`).update(updates);
-                
-                Object.assign(userData, updates);
-                updateUI();
-                
-                showToast('✅ Reward request submitted! Will be sent within 3 days.');
-                
-                setTimeout(async () => {
-                    if (userData.rewardStatus === 'PENDING') {
-                        await database.ref(`users/${currentUser.uid}/rewardStatus`).set('COMPLETED');
-                        userData.rewardStatus = 'COMPLETED';
-                        updateUI();
-                        showToast('🎉 Reward has been sent to your UPI ID!');
-                    }
-                }, 3 * 24 * 60 * 60 * 1000);
-                
-            } catch (error) {
-                console.error('Error submitting reward request:', error);
-                showToast('Error submitting request. Please try again.');
-                button.disabled = false;
-                button.innerHTML = '<i class="fas fa-paper-plane"></i> Request Reward';
-            }
-        }
-
-        // Copy Referral Code
-        function copyReferralCode() {
-            const referralCode = document.getElementById('referral-code').textContent;
-            if (referralCode && referralCode !== 'CK30-LOADING') {
-                navigator.clipboard.writeText(referralCode).then(() => {
-                    showToast('📋 Referral code copied to clipboard!');
-                }).catch(() => {
-                    const textarea = document.createElement('textarea');
-                    textarea.value = referralCode;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    showToast('📋 Referral code copied!');
-                });
-            }
-        }
-
-        // Switch Section
-        function switchSection(sectionId) {
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.section === sectionId);
-            });
-            
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.toggle('active', section.id === `${sectionId}-section`);
-            });
-            
-            window.scrollTo(0, 0);
-        }
-
-        // Show Screen
-        function showScreen(screenName) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            
-            const screenElement = document.getElementById(`${screenName}-screen`);
-            if (screenElement) {
-                screenElement.classList.add('active');
-            }
-        }
-
-        // Handle Logout
-        async function handleLogout() {
-            try {
-                await auth.signOut();
-                currentUser = null;
-                userData = null;
-                stopTimer();
-                showScreen('auth');
-                showToast('Logged out successfully');
-            } catch (error) {
-                console.error('Logout error:', error);
-            }
-        }
-
-        // Show Toast
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('active');
-            
-            setTimeout(() => {
-                toast.classList.remove('active');
-            }, 3000);
+            return code;
         }
 
         // Generate Random Code
@@ -2601,44 +1728,231 @@
             return code;
         }
 
-        // Get Reward Status Text
-        function getRewardStatusText(status) {
-            switch (status) {
-                case 'NOT_ELIGIBLE': return 'Not Eligible';
-                case 'PENDING': return 'Processing';
-                case 'COMPLETED': return 'Completed';
-                default: return 'Not Eligible';
+        // Generate Streak Days
+        function generateStreakDays() {
+            const streakContainer = document.getElementById('streak-days');
+            streakContainer.innerHTML = '';
+            
+            for (let i = 1; i <= 30; i++) {
+                const dayBox = document.createElement('div');
+                dayBox.className = 'day-box';
+                dayBox.textContent = i;
+                streakContainer.appendChild(dayBox);
             }
         }
 
-        // Reset Daily Timer
-        function resetDailyTimer() {
-            if (confirm('Reset timer? This will restart the 2-minute wait period.')) {
-                stopTimer();
-                timeLeft = 120;
-                updateTimerDisplay();
-                updateCheckinButton(false);
-                startVisitTimer();
-                showToast('Timer reset successfully!');
-            }
+        // Update Streak Days
+        function updateStreakDays() {
+            if (!userData) return;
+            
+            const activeDays = userData.activeDays || 0;
+            const dayBoxes = document.querySelectorAll('.day-box');
+            
+            dayBoxes.forEach((box, index) => {
+                const dayNumber = index + 1;
+                
+                if (dayNumber <= activeDays) {
+                    box.className = 'day-box completed';
+                } else if (dayNumber === activeDays + 1) {
+                    box.className = 'day-box active';
+                } else {
+                    box.className = 'day-box';
+                }
+            });
         }
 
-        // Check Daily Check-in
-        function checkDailyCheckin() {
-            if (!userData || !userData.lastCheckIn) {
+        // Start Timer
+        function startTimer() {
+            if (isTimerRunning) return;
+            
+            isTimerRunning = true;
+            timeLeft = 120;
+            
+            document.getElementById('start-timer-btn').disabled = true;
+            document.getElementById('start-timer-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Timer Running...';
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                // Update display
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                document.getElementById('timer-display').textContent = display;
+                document.getElementById('time-spent').textContent = `${2 - minutes - 1}:${59 - seconds}`;
+                
+                // Update progress
+                const progress = ((120 - timeLeft) / 120) * 100;
+                document.getElementById('progress-fill').style.width = `${progress}%`;
+                
+                // Check if timer completed
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    isTimerRunning = false;
+                    isCheckinReady = true;
+                    
+                    document.getElementById('start-timer-btn').innerHTML = '<i class="fas fa-check"></i> Timer Completed';
+                    document.getElementById('daily-checkin-btn').disabled = false;
+                    document.getElementById('daily-checkin-btn').innerHTML = '<i class="fas fa-unlock"></i> Daily Check-in Available';
+                    
+                    showToast('Timer completed! You can now check-in for today.');
+                }
+            }, 1000);
+        }
+
+        // Open Check-in Modal
+        function openCheckinModal() {
+            if (!isCheckinReady) {
+                showToast('Complete the timer first to unlock check-in');
                 return;
             }
             
-            const lastCheckIn = new Date(userData.lastCheckIn);
-            const today = new Date();
+            checkinTimeLeft = 5;
+            document.getElementById('checkin-timer').textContent = checkinTimeLeft;
+            document.getElementById('checkin-countdown').textContent = checkinTimeLeft;
+            document.getElementById('complete-checkin-btn').disabled = true;
+            document.getElementById('checkin-progress').style.width = '0%';
             
-            lastCheckIn.setHours(0, 0, 0, 0);
-            today.setHours(0, 0, 0, 0);
+            openModal('checkin-modal');
             
-            if (lastCheckIn.getTime() === today.getTime()) {
-                updateCheckinButton(true);
+            // Start check-in countdown
+            if (checkinTimer) clearInterval(checkinTimer);
+            
+            checkinTimer = setInterval(() => {
+                checkinTimeLeft--;
+                
+                document.getElementById('checkin-timer').textContent = checkinTimeLeft;
+                document.getElementById('checkin-countdown').textContent = checkinTimeLeft;
+                
+                const progress = ((5 - checkinTimeLeft) / 5) * 100;
+                document.getElementById('checkin-progress').style.width = `${progress}%`;
+                
+                if (checkinTimeLeft <= 0) {
+                    clearInterval(checkinTimer);
+                    document.getElementById('complete-checkin-btn').disabled = false;
+                    document.getElementById('complete-checkin-btn').innerHTML = '<i class="fas fa-check-circle"></i> Complete Check-in';
+                }
+            }, 1000);
+        }
+
+        // Complete Check-in
+        async function completeCheckin() {
+            try {
+                if (!currentUser || !userData) {
+                    showToast('Please login first');
+                    return;
+                }
+
+                const today = new Date();
+                const lastCheckIn = userData.lastCheckIn ? new Date(userData.lastCheckIn) : null;
+                
+                // Check if already checked in today
+                if (lastCheckIn && lastCheckIn.toDateString() === today.toDateString()) {
+                    showToast('You have already checked in today!');
+                    closeModal('checkin-modal');
+                    return;
+                }
+                
+                // Calculate streak
+                let streak = userData.streak || 0;
+                if (lastCheckIn) {
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    
+                    if (lastCheckIn.toDateString() === yesterday.toDateString()) {
+                        streak += 1;
+                    } else {
+                        streak = 1;
+                    }
+                } else {
+                    streak = 1;
+                }
+                
+                // Calculate points
+                const pointsEarned = 10;
+                const newPoints = (userData.points || 0) + pointsEarned;
+                const newActiveDays = (userData.activeDays || 0) + 1;
+                
+                // Update user data
+                const updates = {
+                    lastCheckIn: today.toISOString(),
+                    activeDays: newActiveDays,
+                    points: newPoints,
+                    streak: streak
+                };
+                
+                await database.ref(`users/${currentUser.uid}`).update(updates);
+                
+                // Update local userData
+                Object.assign(userData, updates);
+                
+                // Reset check-in status
+                isCheckinReady = false;
+                
+                // Update UI
+                updateUIForUser();
+                
+                // Show success
+                showToast(`✅ Daily check-in completed! +${pointsEarned} points earned.`);
+                
+                // Close modal
+                closeModal('checkin-modal');
+                
+            } catch (error) {
+                console.error('Error completing check-in:', error);
+                showToast('Error completing check-in. Please try again.');
             }
         }
+
+        // Contact Support
+        function contactSupport() {
+            window.open('mailto:gotmprajapat00@gmail.com', '_blank');
+        }
+
+        // Show Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('active');
+            
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        // Add scroll animations
+        window.addEventListener('scroll', () => {
+            const features = document.querySelectorAll('.feature-card');
+            const steps = document.querySelectorAll('.step-card');
+            
+            features.forEach(feature => {
+                const rect = feature.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    feature.style.opacity = '1';
+                    feature.style.transform = 'translateY(0)';
+                }
+            });
+            
+            steps.forEach((step, index) => {
+                const rect = step.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    setTimeout(() => {
+                        step.style.opacity = '1';
+                        step.style.transform = 'translateY(0)';
+                    }, index * 200);
+                }
+            });
+        });
+
+        // Initialize animations
+        setTimeout(() => {
+            document.querySelectorAll('.feature-card, .step-card').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            });
+        }, 100);
     </script>
 </body>
 </html>
