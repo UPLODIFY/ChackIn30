@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CheckIn30 - Daily Rewards</title>
+    <title>CheckIn30 - Daily Rewards Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -26,351 +26,303 @@
             --danger: #e74c3c;
             --dark: #0f0c29;
             --light: #f8f9fa;
-            --gray: #6c757d;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #24243e 100%);
             color: white;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* Header */
-        .main-header {
+        /* Screens */
+        .screen {
+            display: none;
+            min-height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 12, 41, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            bottom: 0;
         }
 
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.8s ease;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: white;
-            text-decoration: none;
-        }
-
-        .logo i {
-            color: var(--accent);
-        }
-
-        .header-auth {
-            display: flex;
-            gap: 15px;
-        }
-
-        .header-btn {
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            font-size: 0.9rem;
-        }
-
-        .login-btn {
-            background: transparent;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-        }
-
-        .login-btn:hover {
-            background: var(--accent);
-            color: white;
-        }
-
-        .register-btn {
+        /* Loading Screen */
+        #loading-screen {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-        }
-
-        .register-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent), var(--primary));
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .user-avatar i {
+        .loading-container {
+            text-align: center;
+        }
+
+        .logo-animation {
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            font-size: 5rem;
             color: white;
+            animation: bounce 2s infinite;
+            margin-bottom: 20px;
         }
 
-        .user-details {
+        .logo-text {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+
+        /* Login/Register Screen */
+        #auth-screen {
+            background: linear-gradient(135deg, #0f0c29, #302b63);
+        }
+
+        /* Header */
+        .main-header {
+            background: rgba(15, 12, 41, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 20px 50px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .user-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .user-points {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.7);
+        .logo-header {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 15px;
         }
 
-        .logout-btn {
+        .logo-header i {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .logo-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .auth-btn {
+            padding: 10px 30px;
+            border: 2px solid var(--accent);
             background: transparent;
-            border: 2px solid var(--danger);
-            color: var(--danger);
-            padding: 8px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
+            color: var(--accent);
+            border-radius: 25px;
             font-weight: 600;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .logout-btn:hover {
-            background: var(--danger);
+        .auth-btn:hover {
+            background: var(--accent);
             color: white;
+            transform: translateY(-2px);
         }
 
-        /* Main Content */
-        .main-content {
-            padding-top: 80px;
-            max-width: 1200px;
-            margin: 0 auto;
+        .auth-btn.active {
+            background: var(--accent);
+            color: white;
         }
 
         /* Hero Section */
         .hero-section {
-            padding: 60px 20px;
+            padding: 180px 50px 100px;
             text-align: center;
             background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(58, 12, 163, 0.1));
-            border-radius: 20px;
-            margin: 20px;
-            animation: fadeIn 1s ease;
+            margin-top: 80px;
         }
 
         .hero-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 800;
+            font-size: 4rem;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--accent), white);
+            background: linear-gradient(45deg, #fff, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: slideUp 1s ease;
         }
 
         .hero-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: rgba(255, 255, 255, 0.8);
             margin-bottom: 40px;
-            max-width: 600px;
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-            animation: slideUp 1.2s ease;
         }
 
-        /* Stats Section */
-        .stats-section {
-            padding: 40px 20px;
-            animation: fadeIn 1.4s ease;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .stat-item {
+        /* Auth Forms */
+        .auth-container {
+            display: none;
+            max-width: 500px;
+            margin: 50px auto;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
-            animation: fadeIn 0.6s ease;
+            animation: slideUp 0.5s ease;
         }
 
-        .stat-item:hover {
-            transform: translateY(-5px);
+        .auth-container.active {
+            display: block;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
             background: rgba(255, 255, 255, 0.08);
         }
 
-        .stat-item i {
-            font-size: 2.5rem;
-            color: var(--accent);
-            margin-bottom: 15px;
-        }
-
-        .stat-item h3 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-        }
-
-        .stat-item p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-
-        /* Progress Bar */
-        .progress-container {
-            margin: 30px 0;
-            animation: fadeIn 1.6s ease;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .progress-bar {
-            height: 20px;
-            background: rgba(255, 255, 255, 0.1);
+            border: none;
             border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            border-radius: 10px;
-            width: 0%;
-            transition: width 1s ease;
-            position: relative;
-        }
-
-        .progress-days {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .day-marker {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            position: relative;
+            transition: all 0.3s ease;
+            margin-top: 10px;
         }
 
-        .day-marker.active {
-            background: var(--success);
-            color: white;
-            transform: scale(1.1);
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.3);
         }
 
-        .day-marker.completed {
-            background: var(--accent);
-            color: white;
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            text-align: center;
+            padding: 10px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid var(--danger);
+        }
+
+        .success-message {
+            color: var(--success);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            text-align: center;
+            padding: 10px;
+            background: rgba(46, 204, 113, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid var(--success);
         }
 
         /* Features Section */
         .features-section {
-            padding: 60px 20px;
-            animation: fadeIn 1.8s ease;
+            padding: 100px 50px;
+            background: rgba(15, 12, 41, 0.7);
         }
 
         .section-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 2.5rem;
             text-align: center;
+            font-size: 2.5rem;
             margin-bottom: 50px;
-            color: white;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            border-radius: 2px;
+            color: var(--accent);
         }
 
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .feature-card {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 20px;
-            padding: 30px;
+            padding: 40px 30px;
+            text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
-            animation: fadeIn 0.8s ease;
         }
 
         .feature-card:hover {
             transform: translateY(-10px);
             background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
 
         .feature-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 3rem;
+            color: var(--accent);
             margin-bottom: 20px;
-        }
-
-        .feature-icon i {
-            font-size: 2rem;
-            color: white;
         }
 
         .feature-card h3 {
@@ -382,80 +334,337 @@
         .feature-card p {
             color: rgba(255, 255, 255, 0.7);
             line-height: 1.6;
+        }
+
+        /* How It Works */
+        .works-section {
+            padding: 100px 50px;
+            background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(67, 97, 238, 0.1));
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 30px;
+        }
+
+        .step-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        /* Main App Screen */
+        #app-container {
+            display: none;
+        }
+
+        #app-container.active {
+            display: block;
+        }
+
+        /* App Header */
+        .app-header {
+            background: rgba(15, 12, 41, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 50px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-avatar i {
+            font-size: 1.5rem;
+        }
+
+        .user-details h3 {
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            padding: 10px 25px;
+            background: transparent;
+            border: 2px solid var(--danger);
+            color: var(--danger);
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* App Content */
+        .app-content {
+            padding: 150px 50px 100px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Dashboard */
+        .dashboard-section {
+            margin-bottom: 80px;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(58, 12, 163, 0.1));
+            border-radius: 25px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .stat-item h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .stat-item p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Progress Section */
+        .progress-section {
+            margin: 40px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
+        }
+
+        .progress-title {
+            font-size: 1.3rem;
+            color: white;
+        }
+
+        .progress-bar {
+            height: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Timer Section */
+        .timer-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 20px 0;
+        }
+
+        .timer-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: 5px;
+            width: 0%;
+            transition: width 1s linear;
+        }
+
+        .checkin-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .checkin-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.3);
+        }
+
+        .checkin-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: var(--gray);
+        }
+
+        /* Reward Request Section */
+        .reward-request-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .reward-status {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .status-pending {
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            color: var(--warning);
+        }
+
+        .status-success {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: var(--success);
+        }
+
+        /* Referral Section */
+        .referral-section {
+            background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(67, 97, 238, 0.1));
+            border-radius: 25px;
+            padding: 40px;
+            margin: 40px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .referral-code {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.8rem;
+            letter-spacing: 3px;
+            margin: 20px 0;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
         }
 
         /* Ads Section */
         .ads-section {
-            padding: 40px 20px;
-            animation: fadeIn 2s ease;
+            margin: 40px 0;
         }
 
         .ad-container {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 15px;
             padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
             margin: 20px 0;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            text-align: center;
         }
 
         /* Footer */
-        .main-footer {
-            background: rgba(15, 12, 41, 0.95);
-            padding: 60px 20px 30px;
-            margin-top: 60px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-        }
-
-        .footer-section h3 {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            color: white;
-        }
-
-        .footer-section p {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 10px;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--accent);
-        }
-
-        .copyright {
+        .footer {
+            background: rgba(15, 12, 41, 0.9);
+            padding: 50px;
             text-align: center;
-            padding-top: 30px;
-            margin-top: 30px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
+            margin-top: 100px;
         }
 
-        /* Modals */
-        .modal-overlay {
+        /* Popups */
+        .popup-overlay {
             display: none;
             position: fixed;
             top: 0;
@@ -467,17 +676,17 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+        }
+
+        .popup-overlay.active {
+            display: flex;
             animation: fadeIn 0.3s ease;
         }
 
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
+        .popup-content {
             background: rgba(15, 12, 41, 0.95);
-            border-radius: 20px;
-            padding: 30px;
+            border-radius: 25px;
+            padding: 40px;
             max-width: 500px;
             width: 100%;
             max-height: 90vh;
@@ -486,19 +695,19 @@
             animation: slideUp 0.4s ease;
         }
 
-        .modal-header {
+        .popup-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
-        .modal-header h3 {
+        .popup-header h3 {
             font-size: 1.8rem;
             color: var(--accent);
         }
 
-        .modal-close {
+        .popup-close {
             background: rgba(255, 255, 255, 0.1);
             border: none;
             width: 40px;
@@ -506,234 +715,25 @@
             border-radius: 50%;
             color: white;
             cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .modal-body {
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.6;
-        }
-
-        .modal-timer {
-            text-align: center;
-            margin: 30px 0;
-            font-size: 2.5rem;
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        .modal-progress {
-            margin: 20px 0;
-        }
-
-        .modal-progress-bar {
-            height: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .modal-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            border-radius: 5px;
-            width: 0%;
-            transition: width 1s linear;
-        }
-
-        .modal-progress-text {
-            display: flex;
-            justify-content: space-between;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-
-        .modal-ad {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            margin: 20px 0;
-            border: 1px dashed rgba(255, 255, 255, 0.2);
-        }
-
-        .modal-ad h4 {
-            margin-bottom: 10px;
-            color: white;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .modal-btn {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .modal-btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-        }
-
-        .modal-btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
-        }
-
-        .modal-btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .modal-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Forms */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .error-message {
-            color: var(--danger);
-            font-size: 0.9rem;
-            margin-top: 5px;
-            text-align: center;
-            min-height: 20px;
         }
 
         /* Toast */
         .toast {
             position: fixed;
-            top: 100px;
-            right: 20px;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
+            padding: 15px 30px;
+            border-radius: 15px;
             z-index: 3000;
-            animation: slideInRight 0.3s ease;
+            animation: slideUp 0.3s ease;
             display: none;
-            max-width: 300px;
         }
 
         .toast.active {
             display: block;
-        }
-
-        /* Check-in Button */
-        .checkin-btn {
-            background: linear-gradient(135deg, var(--accent), var(--primary));
-            color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 30px auto;
-            animation: pulse 2s infinite;
-        }
-
-        .checkin-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(76, 201, 240, 0.3);
-        }
-
-        .checkin-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            animation: none;
-        }
-
-        /* Request Button */
-        .request-btn {
-            background: linear-gradient(135deg, var(--success), #27ae60);
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 20px auto;
-        }
-
-        .request-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
-        }
-
-        .request-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Request Status */
-        .request-status {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 4px solid var(--accent);
-        }
-
-        .request-status h4 {
-            color: white;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .request-status p {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.5;
         }
 
         /* Animations */
@@ -745,7 +745,7 @@
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(50px);
             }
             to {
                 opacity: 1;
@@ -753,505 +753,608 @@
             }
         }
 
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 5px;
         }
 
         /* Responsive */
-        @media (max-width: 992px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
         @media (max-width: 768px) {
+            .main-header, .app-header {
+                padding: 20px;
+            }
+
+            .hero-section {
+                padding: 120px 20px 60px;
+            }
+
             .hero-title {
                 font-size: 2.5rem;
             }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
+
+            .features-section, .works-section, .app-content {
+                padding: 50px 20px;
             }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .modal-buttons {
+
+            .steps-container {
                 flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .auth-container {
+                margin: 30px 20px;
+                padding: 30px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="main-header">
-        <div class="header-content">
-            <a href="#" class="logo">
-                <i class="fas fa-calendar-check"></i>
-                <span>CheckIn30</span>
-            </a>
-            
-            <div id="auth-buttons" class="header-auth">
-                <button class="header-btn login-btn" onclick="openLoginModal()">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-                <button class="header-btn register-btn" onclick="openRegisterModal()">
-                    <i class="fas fa-user-plus"></i> Register
-                </button>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen active">
+        <div class="loading-container">
+            <div class="logo-animation">
+                <i class="fas fa-calendar-check logo-icon"></i>
+                <h1 class="logo-text">CheckIn30</h1>
             </div>
-            
-            <div id="user-menu" class="user-info" style="display: none;">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="user-details">
-                    <span class="user-name" id="header-username">User</span>
-                    <span class="user-points">
-                        <i class="fas fa-coins"></i>
-                        <span id="header-points">0</span> Points
-                    </span>
-                </div>
-                <button class="logout-btn" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
+            <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.2rem;">
+                Loading your rewards platform...
+            </p>
+            <div class="loading-spinner"></div>
         </div>
-    </header>
+    </div>
 
-    <!-- Main Content -->
-    <main class="main-content" id="main-content" style="display: none;">
+    <!-- Auth Screen (Main Website) -->
+    <div id="auth-screen" class="screen">
+        <!-- Header with Login/Register -->
+        <header class="main-header">
+            <div class="logo-header">
+                <i class="fas fa-calendar-check"></i>
+                <h1>CheckIn30</h1>
+            </div>
+            <div class="auth-buttons">
+                <button class="auth-btn active" data-form="login">Login</button>
+                <button class="auth-btn" data-form="register">Register</button>
+            </div>
+        </header>
+
         <!-- Hero Section -->
         <section class="hero-section">
-            <h1 class="hero-title">Welcome to CheckIn30</h1>
-            <p class="hero-subtitle">Complete daily check-ins for 30 days and earn amazing rewards. Simple, secure, and rewarding!</p>
+            <h2 class="hero-title">Earn Daily Rewards</h2>
+            <p class="hero-subtitle">Complete daily check-ins for 30 days and claim your reward. Simple, secure, and rewarding!</p>
             
-            <div class="progress-container">
-                <div class="progress-header">
-                    <span>30-Day Progress</span>
-                    <span id="progress-percent">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div id="progress-fill" class="progress-fill"></div>
-                </div>
-                <div class="progress-days" id="progress-days">
-                    <!-- Days will be added dynamically -->
-                </div>
-            </div>
-            
-            <button id="checkin-button" class="checkin-btn" onclick="openCheckinModal()" disabled>
-                <i class="fas fa-lock"></i>
-                <span id="checkin-text">Daily Check-in Locked</span>
-            </button>
-        </section>
-
-        <!-- Stats Section -->
-        <section class="stats-section">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <i class="fas fa-fire"></i>
-                    <h3 id="current-streak">0</h3>
-                    <p>Current Streak</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-calendar-check"></i>
-                    <h3 id="active-days">0</h3>
-                    <p>Active Days</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-coins"></i>
-                    <h3 id="total-points">0</h3>
-                    <p>Total Points</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-gift"></i>
-                    <h3 id="days-remaining">30</h3>
-                    <p>Days Remaining</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Features Section -->
-        <section class="features-section">
-            <h2 class="section-title">How It Works</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <h3>Daily Visit</h3>
-                    <p>Visit our website daily and browse for 2 minutes to unlock check-in.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <h3>Complete Check-in</h3>
-                    <p>After 2 minutes, complete your daily check-in to earn points.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Track Progress</h3>
-                    <p>Monitor your 30-day progress streak and active days.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <h3>Claim Reward</h3>
-                    <p>After 30 days, request your reward which will be delivered in 3 days.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Ads Section -->
-        <section class="ads-section">
-            <div class="ad-container">
+            <!-- Main Banner Ad -->
+            <div class="ad-container" style="max-width: 800px; margin: 40px auto;">
                 <!-- Main Home Banner Ad -->
-                <script> 
-                    atOptions = { 
-                        'key' : '77505fdc9e6831daaf1eca8467e91c3c', 
-                        'format' : 'iframe', 
-                        'height' : 90, 
-                        'width' : 728, 
-                        'params' : {} 
-                    }; 
-                </script> 
-                <script src="https://www.highperformanceformat.com/77505fdc9e6831daaf1eca8467e91c3c/invoke.js"></script>
+                <div id="main-home-banner">
+                    <script>
+                        atOptions = { 
+                            'key' : '77505fdc9e6831daaf1eca8467e91c3c', 
+                            'format' : 'iframe', 
+                            'height' : 90, 
+                            'width' : 728, 
+                            'params' : {} 
+                        };
+                    </script>
+                    <script src="https://www.highperformanceformat.com/77505fdc9e6831daaf1eca8467e91c3c/invoke.js"></script>
+                </div>
             </div>
         </section>
 
-        <!-- Request Status Section -->
-        <div id="request-status-section" style="display: none;">
-            <div class="request-status">
-                <h4><i class="fas fa-hourglass-half"></i> Reward Request Status</h4>
-                <p id="request-status-text">Your reward request has been submitted. It will be processed within 3 days.</p>
-                <p id="request-date" style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.5);"></p>
+        <!-- Login Form -->
+        <div id="login-form" class="auth-container active">
+            <h3 class="form-title">Login to Your Account</h3>
+            <div class="form-group">
+                <label for="login-email">Email Address</label>
+                <input type="email" id="login-email" placeholder="Enter your email" autocomplete="email">
             </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password">
+            </div>
+            <button id="login-btn" class="submit-btn">
+                <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+            </button>
+            <div id="login-error" class="error-message"></div>
+            <div id="login-success" class="success-message" style="display: none;"></div>
         </div>
 
-        <!-- More Features -->
+        <!-- Register Form -->
+        <div id="register-form" class="auth-container">
+            <h3 class="form-title">Create New Account</h3>
+            <div class="form-group">
+                <label for="register-email">Email Address</label>
+                <input type="email" id="register-email" placeholder="Enter your email" autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label for="register-password">Password</label>
+                <input type="password" id="register-password" placeholder="Minimum 6 characters" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+                <label for="referral-code">Referral Code (Optional)</label>
+                <input type="text" id="referral-code" placeholder="Enter friend's referral code">
+            </div>
+            <button id="register-btn" class="submit-btn">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+            <div id="register-error" class="error-message"></div>
+            <div id="register-success" class="success-message" style="display: none;"></div>
+        </div>
+
+        <!-- Features Section -->
         <section class="features-section">
             <h2 class="section-title">Why Choose CheckIn30?</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Secure Platform</h3>
-                    <p>Your data and earnings are protected with advanced security measures.</p>
+                    <i class="fas fa-gift feature-icon"></i>
+                    <h3>Daily Rewards</h3>
+                    <p>Earn points every day by completing simple check-ins. Consistent participation leads to bigger rewards.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Instant Updates</h3>
-                    <p>Real-time tracking of your progress and earnings.</p>
+                    <i class="fas fa-shield-alt feature-icon"></i>
+                    <h3>Trusted System</h3>
+                    <p>Secure and transparent platform with verified payouts. Your earnings are always protected.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-headset"></i>
-                    </div>
-                    <h3>24/7 Support</h3>
-                    <p>Our support team is always ready to help you with any queries.</p>
+                    <i class="fas fa-bolt feature-icon"></i>
+                    <h3>Fast Processing</h3>
+                    <p>Quick reward processing within 3 days of request. Simple UPI transfer directly to your account.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>Mobile Friendly</h3>
-                    <p>Access your account and complete check-ins from any device.</p>
+                    <i class="fas fa-users feature-icon"></i>
+                    <h3>Referral Bonus</h3>
+                    <p>Earn extra points by inviting friends. Get +5 points for each friend who completes 3 check-ins.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Another Ad -->
-        <section class="ads-section">
-            <div class="ad-container">
-                <!-- Native Ad -->
-                <script async="async" data-cfasync="false" src="https://pl28624266.effectivegatecpm.com/6bc4ee56d47d8bd07693b3f7aff17fd1/invoke.js"></script> 
-                <div id="container-6bc4ee56d47d8bd07693b3f7aff17fd1"></div>
+        <!-- How It Works -->
+        <section class="works-section">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <i class="fas fa-calendar-alt feature-icon"></i>
+                    <h3>Visit Daily</h3>
+                    <p>Come to the website every day</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <i class="fas fa-check-circle feature-icon"></i>
+                    <h3>Complete Check-in</h3>
+                    <p>Finish 2-minute browsing timer</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <h3>Track Progress</h3>
+                    <p>Monitor your 30-day journey</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <i class="fas fa-trophy feature-icon"></i>
+                    <h3>Claim Reward</h3>
+                    <p>Request reward after 30 days</p>
+                </div>
             </div>
         </section>
 
-        <!-- Referral Section -->
+        <!-- More Ads -->
+        <div class="ad-container" style="max-width: 800px; margin: 40px auto;">
+            <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 10px;">Advertisement</p>
+            <!-- Ad Space 2 -->
+            <div>Advertisement Space 2 - Add your ad code here</div>
+        </div>
+
+        <!-- More Features -->
         <section class="features-section">
-            <h2 class="section-title">Refer & Earn More</h2>
+            <h2 class="section-title">Premium Features</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <h3>Share Your Code</h3>
-                    <p>Share your unique referral code with friends and family.</p>
+                    <i class="fas fa-chart-pie feature-icon"></i>
+                    <h3>Progress Tracking</h3>
+                    <p>Real-time progress tracking with beautiful visualizations</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-coins"></i>
-                    </div>
-                    <h3>Earn Bonus Points</h3>
-                    <p>Get +5 points for each friend who completes 3 check-ins.</p>
+                    <i class="fas fa-history feature-icon"></i>
+                    <h3>Activity History</h3>
+                    <p>Complete history of all your check-ins and rewards</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Monthly Limits</h3>
-                    <p>Earn from up to 5 referrals per month (safe & limited).</p>
+                    <i class="fas fa-bell feature-icon"></i>
+                    <h3>Daily Reminders</h3>
+                    <p>Never miss a check-in with our reminder system</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-pie"></i>
-                    </div>
-                    <h3>Track Earnings</h3>
-                    <p>Monitor your referral earnings and monthly progress.</p>
+                    <i class="fas fa-headset feature-icon"></i>
+                    <h3>24/7 Support</h3>
+                    <p>Round-the-clock customer support for all your queries</p>
                 </div>
             </div>
         </section>
-    </main>
 
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>CheckIn30</h3>
-                <p>Daily check-ins for consistent rewards. Complete 30 days and claim your reward.</p>
-                <p>Trusted by thousands of users worldwide.</p>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
-                    <li><a href="#"><i class="fas fa-gift"></i> Rewards</a></li>
-                    <li><a href="#"><i class="fas fa-users"></i> Referral</a></li>
-                    <li><a href="#"><i class="fas fa-question-circle"></i> FAQ</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Contact Support</h3>
-                <p>Need help? Contact our support team:</p>
-                <p><i class="fas fa-envelope"></i> gotmprajapat00@gmail.com</p>
-                <p><i class="fas fa-clock"></i> 24/7 Support Available</p>
-            </div>
-        </div>
-        
-        <div class="copyright">
-            <p>© 2024 CheckIn30. All rights reserved. | Daily Rewards Platform</p>
-        </div>
-    </footer>
-
-    <!-- Modals -->
-
-    <!-- Login Modal -->
-    <div id="login-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-sign-in-alt"></i> Login</h3>
-                <button class="modal-close" onclick="closeLoginModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="login-email">Email Address</label>
-                    <input type="email" id="login-email" placeholder="Enter your email">
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" placeholder="Enter your password">
-                </div>
-                <div id="login-error" class="error-message"></div>
-                <div class="modal-buttons">
-                    <button class="modal-btn modal-btn-primary" onclick="handleLogin()">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </button>
-                    <button class="modal-btn modal-btn-secondary" onclick="closeLoginModal()">
-                        Cancel
-                    </button>
-                </div>
-                <div class="modal-ad" style="margin-top: 20px;">
-                    <h4>Special Offer!</h4>
-                    <p>New users get bonus points on first check-in</p>
-                </div>
-            </div>
-        </div>
+        <!-- Footer -->
+        <footer class="footer">
+            <h2 style="color: var(--accent); margin-bottom: 20px;">CheckIn30</h2>
+            <p style="color: rgba(255, 255, 255, 0.7); max-width: 600px; margin: 0 auto 30px;">
+                Your trusted partner for daily rewards. Complete 30 check-ins and claim your reward.
+            </p>
+            <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.9rem;">
+                © 2024 CheckIn30. All rights reserved.
+            </p>
+        </footer>
     </div>
 
-    <!-- Register Modal -->
-    <div id="register-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-user-plus"></i> Register</h3>
-                <button class="modal-close" onclick="closeRegisterModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="register-email">Email Address</label>
-                    <input type="email" id="register-email" placeholder="Enter your email">
+    <!-- App Screen (After Login) -->
+    <div id="app-container" class="screen">
+        <!-- App Header -->
+        <header class="app-header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
                 </div>
-                <div class="form-group">
-                    <label for="register-password">Password</label>
-                    <input type="password" id="register-password" placeholder="Minimum 6 characters">
-                </div>
-                <div class="form-group">
-                    <label for="register-referral">Referral Code (Optional)</label>
-                    <input type="text" id="register-referral" placeholder="Enter friend's referral code">
-                </div>
-                <div id="register-error" class="error-message"></div>
-                <div class="modal-buttons">
-                    <button class="modal-btn modal-btn-primary" onclick="handleRegister()">
-                        <i class="fas fa-user-plus"></i> Create Account
-                    </button>
-                    <button class="modal-btn modal-btn-secondary" onclick="closeRegisterModal()">
-                        Cancel
-                    </button>
-                </div>
-                <div class="modal-ad" style="margin-top: 20px;">
-                    <h4>Start Earning Today!</h4>
-                    <p>Complete your first check-in and earn bonus points</p>
+                <div class="user-details">
+                    <h3 id="app-username">User</h3>
+                    <p id="app-email">user@example.com</p>
                 </div>
             </div>
-        </div>
-    </div>
+            <button class="logout-btn" id="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </header>
 
-    <!-- Welcome/Timer Modal -->
-    <div id="welcome-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-hourglass-start"></i> Daily Timer</h3>
-                <button class="modal-close" onclick="closeWelcomeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Please browse our website for 2 minutes to unlock daily check-in.</p>
-                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
-                    <i class="fas fa-info-circle"></i> Move mouse or scroll to keep timer active
+        <!-- App Content -->
+        <main class="app-content">
+            <!-- Dashboard -->
+            <section class="dashboard-section">
+                <div class="dashboard-card">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <i class="fas fa-fire"></i>
+                            <h3 id="current-streak">0</h3>
+                            <p>Current Streak</p>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <h3 id="active-days">0</h3>
+                            <p>Active Days</p>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-coins"></i>
+                            <h3 id="total-points">0</h3>
+                            <p>Total Points</p>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-trophy"></i>
+                            <h3 id="days-left">30</h3>
+                            <p>Days Left</p>
+                        </div>
+                    </div>
+
+                    <!-- 30 Days Progress -->
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <h3 class="progress-title">30-Day Progress</h3>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>Days Completed: <strong id="days-completed">0</strong>/30</span>
+                            <span id="progress-status">Not Started</span>
+                        </div>
+                    </div>
+
+                    <!-- Timer Section -->
+                    <div class="timer-section">
+                        <h3 style="color: white; margin-bottom: 20px;">Daily Check-in Timer</h3>
+                        <p id="timer-message" style="color: rgba(255, 255, 255, 0.8); margin-bottom: 20px;">
+                            ⏳ Start timer to begin your daily check-in
+                        </p>
+                        <div class="timer-display" id="timer-display">2:00</div>
+                        <div class="timer-bar">
+                            <div id="timer-fill" class="timer-fill"></div>
+                        </div>
+                        <button id="start-timer-btn" class="checkin-btn">
+                            <i class="fas fa-play"></i> Start Daily Timer
+                        </button>
+                        <button id="daily-checkin-btn" class="checkin-btn" style="display: none; margin-top: 10px; background: linear-gradient(135deg, var(--success), #27ae60);">
+                            <i class="fas fa-check-circle"></i> Complete Daily Check-in
+                        </button>
+                    </div>
+
+                    <!-- Request Status (Shows after 30 days) -->
+                    <div id="reward-request-section" class="reward-request-section" style="display: none;">
+                        <h3 style="color: white; margin-bottom: 20px;">🎉 Congratulations!</h3>
+                        <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 20px;">
+                            You have completed 30 days! You can now request your reward.
+                        </p>
+                        <div id="reward-status" class="reward-status status-pending" style="display: none;">
+                            <i class="fas fa-hourglass-half"></i>
+                            <h4>Reward Requested</h4>
+                            <p>Your reward will be processed within 3 days</p>
+                        </div>
+                        <button id="request-reward-btn" class="checkin-btn">
+                            <i class="fas fa-gift"></i> Request Your Reward
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Referral Section -->
+            <section class="referral-section">
+                <h2 class="section-title">Refer & Earn</h2>
+                <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 30px; text-align: center;">
+                    Invite friends and earn 5 bonus points for each successful referral
                 </p>
                 
-                <div class="modal-timer" id="welcome-timer">2:00</div>
-                
-                <div class="modal-progress">
-                    <div class="modal-progress-bar">
-                        <div id="welcome-progress-fill" class="modal-progress-fill"></div>
-                    </div>
-                    <div class="modal-progress-text">
-                        <span>Time Spent:</span>
-                        <span id="welcome-time-spent">0:00</span>
-                    </div>
+                <div class="referral-code" id="user-referral-code">
+                    Loading...
                 </div>
                 
-                <div class="modal-ad">
-                    <h4>Limited Time Offer!</h4>
-                    <p>Check our special offers while you wait</p>
-                </div>
-                
-                <button class="modal-btn modal-btn-primary" onclick="closeWelcomeModal()" id="welcome-close-btn">
-                    <i class="fas fa-check"></i> Start Browsing
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Check-in Modal -->
-    <div id="checkin-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-calendar-check"></i> Daily Check-in</h3>
-                <button class="modal-close" id="checkin-close-btn" onclick="closeCheckinModal()" disabled>
-                    <i class="fas fa-times"></i> Close
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Complete your daily check-in to earn points and maintain your streak!</p>
-                
-                <div class="modal-ad">
-                    <h4>Complete Your Check-in</h4>
-                    <p>Please view the ad below to complete your check-in</p>
-                    <!-- Check-in Native Ad -->
-                    <script async="async" data-cfasync="false" src="https://pl28624266.effectivegatecpm.com/6bc4ee56d47d8bd07693b3f7aff17fd1/invoke.js"></script> 
-                    <div id="container-6bc4ee56d47d8bd07693b3f7aff17fd1"></div>
-                </div>
-                
-                <div class="modal-progress" style="margin-top: 20px;">
-                    <div class="modal-progress-bar">
-                        <div id="checkin-progress-fill" class="modal-progress-fill"></div>
-                    </div>
-                    <div class="modal-progress-text">
-                        <span>Check-in Progress:</span>
-                        <span id="checkin-countdown">5</span> seconds
-                    </div>
-                </div>
-                
-                <div class="modal-buttons">
-                    <button class="modal-btn modal-btn-primary" onclick="completeCheckin()" id="checkin-complete-btn" disabled>
-                        <i class="fas fa-check-circle"></i> Complete Check-in
+                <div style="display: flex; gap: 15px; margin: 20px 0;">
+                    <button id="copy-referral-btn" class="checkin-btn" style="flex: 1;">
+                        <i class="fas fa-copy"></i> Copy Code
                     </button>
-                    <button class="modal-btn modal-btn-secondary" onclick="closeCheckinModal()" id="checkin-cancel-btn">
-                        Cancel
+                    <button id="share-referral-btn" class="checkin-btn" style="flex: 1; background: linear-gradient(135deg, var(--accent), #3a86ff);">
+                        <i class="fas fa-share"></i> Share
                     </button>
                 </div>
+
+                <div class="stats-grid" style="margin-top: 30px;">
+                    <div class="stat-item">
+                        <i class="fas fa-user-plus"></i>
+                        <h3 id="total-referrals">0</h3>
+                        <p>Total Referrals</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-coins"></i>
+                        <h3 id="referral-earnings">0</h3>
+                        <p>Points Earned</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-calendar"></i>
+                        <h3 id="monthly-limit">5</h3>
+                        <p>Monthly Limit</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-chart-line"></i>
+                        <h3 id="referrals-left">5</h3>
+                        <p>Left This Month</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ads Section -->
+            <div class="ads-section">
+                <h3 style="color: white; margin-bottom: 20px;">Sponsored Offers</h3>
+                
+                <!-- Ad 1 -->
+                <div class="ad-container">
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 10px;">Advertisement</p>
+                    <!-- Ad Space 3 -->
+                    <div>Advertisement Space 3 - Add your ad code here</div>
+                </div>
+
+                <!-- Ad 2 -->
+                <div class="ad-container">
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 10px;">Special Offer</p>
+                    <!-- Ad Space 4 -->
+                    <div>Advertisement Space 4 - Add your ad code here</div>
+                </div>
             </div>
-        </div>
+
+            <!-- Profile Info -->
+            <section class="referral-section">
+                <h2 class="section-title">Your Profile</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <i class="fas fa-envelope"></i>
+                        <h3 id="profile-email">Email</h3>
+                        <p>Account Details</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3 id="join-date">Date</h3>
+                        <p>Member Since</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-check-circle"></i>
+                        <h3 id="last-checkin">Never</h3>
+                        <p>Last Check-in</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-award"></i>
+                        <h3 id="reward-status-text">Pending</h3>
+                        <p>Reward Status</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- More Ads -->
+            <div class="ads-section">
+                <!-- Ad 3 -->
+                <div class="ad-container">
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 10px;">Recommended</p>
+                    <!-- Ad Space 5 -->
+                    <div>Advertisement Space 5 - Add your ad code here</div>
+                </div>
+
+                <!-- Ad 4 -->
+                <div class="ad-container">
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 10px;">Premium Offer</p>
+                    <!-- Ad Space 6 -->
+                    <div>Advertisement Space 6 - Add your ad code here</div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p style="color: rgba(255, 255, 255, 0.7);">
+                CheckIn30 - Your daily rewards platform
+            </p>
+            <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.9rem; margin-top: 10px;">
+                Complete your daily check-ins and claim amazing rewards
+            </p>
+        </footer>
     </div>
 
-    <!-- Reward Request Modal -->
-    <div id="reward-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-gift"></i> Request Reward</h3>
-                <button class="modal-close" onclick="closeRewardModal()">
+    <!-- Popups -->
+
+    <!-- Welcome Popup -->
+    <div id="welcome-popup" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3>🎉 Welcome to CheckIn30!</h3>
+                <button class="popup-close" onclick="closePopup('welcome-popup')">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="modal-body">
-                <p>Congratulations! You have completed 30 days. You can now request your reward.</p>
+            <div class="popup-body">
+                <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 20px;">
+                    Welcome to your rewards dashboard! Start your journey to earn amazing rewards.
+                </p>
+                
+                <!-- Native Ad in Welcome Popup -->
+                <div class="ad-container" style="margin: 20px 0;">
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 10px;">Special Offer</p>
+                    <!-- Native Ad 1 -->
+                    <div>Native Advertisement - Add your ad code here</div>
+                </div>
+                
+                <p style="color: rgba(255, 255, 255, 0.8); margin: 20px 0;">
+                    <i class="fas fa-info-circle" style="color: var(--accent);"></i>
+                    Click "Start Daily Timer" to begin your first check-in
+                </p>
+                
+                <button class="checkin-btn" onclick="closePopup('welcome-popup')">
+                    <i class="fas fa-check"></i> Get Started
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timer Start Popup -->
+    <div id="timer-popup" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3>⏰ Daily Timer Started</h3>
+                <button class="popup-close" onclick="closePopup('timer-popup')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="popup-body">
+                <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 20px;">
+                    Your 2-minute timer has started! Browse the website while timer runs.
+                </p>
+                
+                <div class="timer-display" id="popup-timer">2:00</div>
+                
+                <div class="timer-bar">
+                    <div id="popup-timer-fill" class="timer-fill"></div>
+                </div>
+                
+                <p style="color: rgba(255, 255, 255, 0.7); margin: 20px 0; text-align: center;">
+                    Timer Progress: <span id="popup-timer-text">0%</span>
+                </p>
+                
+                <button class="checkin-btn" onclick="closePopup('timer-popup')">
+                    <i class="fas fa-eye"></i> Continue Browsing
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Check-in Popup (with Native Ad) -->
+    <div id="checkin-popup" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3>✅ Complete Daily Check-in</h3>
+                <button class="popup-close" id="checkin-close-btn" disabled>
+                    <i class="fas fa-times"></i> Close (5s)
+                </button>
+            </div>
+            <div class="popup-body">
+                <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 20px;">
+                    Complete your daily check-in to earn points!
+                </p>
+                
+                <!-- Native Ad for Check-in -->
+                <div class="ad-container" style="margin: 20px 0; padding: 30px;">
+                    <div id="checkin-native-ad">
+                        <!-- Native Ad for Check-in Page -->
+                        <script async="async" data-cfasync="false" src="https://pl28624266.effectivegatecpm.com/6bc4ee56d47d8bd07693b3f7aff17fd1/invoke.js"></script>
+                        <div id="container-6bc4ee56d47d8bd07693b3f7aff17fd1"></div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <i class="fas fa-gift" style="font-size: 4rem; color: var(--accent);"></i>
+                    <h3 style="margin-top: 20px; color: white;">+10 Points Reward</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7);">Complete check-in to claim</p>
+                </div>
+                
+                <div id="checkin-countdown" style="text-align: center; font-size: 2rem; color: var(--accent); font-weight: bold; margin: 20px 0;">
+                    5
+                </div>
+                
+                <p style="text-align: center; color: rgba(255, 255, 255, 0.7);">
+                    Close button will be enabled in <span id="countdown-text" style="color: var(--accent); font-weight: bold;">5</span> seconds
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reward Request Popup -->
+    <div id="reward-request-popup" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3>🎁 Request Your Reward</h3>
+                <button class="popup-close" onclick="closePopup('reward-request-popup')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="popup-body">
+                <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 20px;">
+                    Congratulations! You've completed 30 days. Enter your UPI ID to receive your reward.
+                </p>
                 
                 <div class="form-group">
-                    <label for="reward-upi">Enter UPI ID</label>
-                    <input type="text" id="reward-upi" placeholder="Enter your UPI ID (e.g., name@upi)">
-                    <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 5px;">
-                        Reward will be sent to this UPI ID within 3 days
-                    </small>
+                    <label for="reward-upi">UPI ID</label>
+                    <input type="text" id="reward-upi" placeholder="e.g., name@upi">
                 </div>
                 
-                <div class="modal-ad">
-                    <h4>🎉 Congratulations!</h4>
-                    <p>You've successfully completed 30 daily check-ins!</p>
-                </div>
+                <p style="color: rgba(255, 255, 255, 0.7); margin: 20px 0; padding: 15px; background: rgba(76, 201, 240, 0.1); border-radius: 10px;">
+                    <i class="fas fa-info-circle" style="color: var(--accent);"></i>
+                    Reward will be sent within 3 days after request
+                </p>
                 
-                <div class="modal-buttons">
-                    <button class="modal-btn modal-btn-primary" onclick="handleRewardRequest()" id="reward-submit-btn">
-                        <i class="fas fa-paper-plane"></i> Submit Request
-                    </button>
-                    <button class="modal-btn modal-btn-secondary" onclick="closeRewardModal()">
-                        Later
-                    </button>
-                </div>
+                <button id="submit-reward-request" class="checkin-btn">
+                    <i class="fas fa-paper-plane"></i> Submit Reward Request
+                </button>
             </div>
         </div>
     </div>
@@ -1281,38 +1384,59 @@
         let currentUser = null;
         let userData = null;
         let timerInterval = null;
-        let welcomeTimerInterval = null;
-        let checkinTimerInterval = null;
-        let timeLeft = 120; // 2 minutes
-        let welcomeTimeLeft = 120;
-        let checkinTimeLeft = 5;
-        let activityDetected = false;
-        let lastActivityTime = Date.now();
-        let hasShownWelcomePopup = false;
+        let checkinCountdown = null;
+        let timeLeft = 120; // 2 minutes in seconds
+        let timerActive = false;
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', () => {
-            checkAuthState();
-            setupActivityDetection();
-            setupEventListeners();
-            createProgressDays();
+            initializeApp();
         });
 
-        // Setup Event Listeners
+        function initializeApp() {
+            setupEventListeners();
+            checkAuthState();
+        }
+
         function setupEventListeners() {
-            // Enter key in login/register forms
-            document.getElementById('login-email')?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleLogin();
+            // Auth buttons in header
+            document.querySelectorAll('.auth-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const formType = btn.dataset.form;
+                    switchAuthForm(formType);
+                });
             });
-            document.getElementById('login-password')?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleLogin();
+
+            // Login/Register buttons
+            document.getElementById('login-btn').addEventListener('click', handleLogin);
+            document.getElementById('register-btn').addEventListener('click', handleRegister);
+            document.getElementById('logout-btn').addEventListener('click', handleLogout);
+
+            // Timer and check-in buttons
+            document.getElementById('start-timer-btn').addEventListener('click', startDailyTimer);
+            document.getElementById('daily-checkin-btn').addEventListener('click', openCheckinPopup);
+            document.getElementById('checkin-close-btn').addEventListener('click', completeDailyCheckin);
+
+            // Referral buttons
+            document.getElementById('copy-referral-btn').addEventListener('click', copyReferralCode);
+            document.getElementById('share-referral-btn').addEventListener('click', shareReferral);
+
+            // Reward request
+            document.getElementById('request-reward-btn').addEventListener('click', () => {
+                openPopup('reward-request-popup');
             });
-            document.getElementById('register-email')?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleRegister();
+            document.getElementById('submit-reward-request').addEventListener('click', submitRewardRequest);
+        }
+
+        function switchAuthForm(formType) {
+            // Update active button
+            document.querySelectorAll('.auth-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.form === formType);
             });
-            document.getElementById('register-password')?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleRegister();
-            });
+
+            // Show/hide forms
+            document.getElementById('login-form').classList.toggle('active', formType === 'login');
+            document.getElementById('register-form').classList.toggle('active', formType === 'register');
         }
 
         // Check Auth State
@@ -1322,9 +1446,190 @@
                     currentUser = user;
                     loadUserData();
                 } else {
-                    showLoggedOutState();
+                    // Show auth screen (main website)
+                    setTimeout(() => {
+                        showScreen('auth-screen');
+                    }, 1000);
                 }
             });
+        }
+
+        // Handle Login
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errorElement = document.getElementById('login-error');
+            const successElement = document.getElementById('login-success');
+            const button = document.getElementById('login-btn');
+
+            // Clear messages
+            errorElement.textContent = '';
+            successElement.style.display = 'none';
+
+            // Validation
+            if (!email || !password) {
+                errorElement.textContent = 'Please enter both email and password';
+                return;
+            }
+
+            try {
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+
+                // Firebase login
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Clear form
+                document.getElementById('login-email').value = '';
+                document.getElementById('login-password').value = '';
+                
+                // Show success
+                successElement.textContent = 'Login successful! Loading dashboard...';
+                successElement.style.display = 'block';
+                
+                // Success toast
+                showToast('✅ Login successful! Welcome back.');
+
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                let errorMessage = 'Login failed. Please try again.';
+                
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'No account found with this email.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Incorrect password.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email format.';
+                        break;
+                }
+                
+                errorElement.textContent = errorMessage;
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to Dashboard';
+            }
+        }
+
+        // Handle Register
+        async function handleRegister() {
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+            const referralCode = document.getElementById('referral-code').value.trim();
+            const errorElement = document.getElementById('register-error');
+            const successElement = document.getElementById('register-success');
+            const button = document.getElementById('register-btn');
+
+            // Clear messages
+            errorElement.textContent = '';
+            successElement.style.display = 'none';
+
+            // Validation
+            if (!email || !password) {
+                errorElement.textContent = 'Please enter both email and password';
+                return;
+            }
+
+            if (password.length < 6) {
+                errorElement.textContent = 'Password must be at least 6 characters';
+                return;
+            }
+
+            try {
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+
+                // Create user
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Generate referral code
+                const userReferralCode = generateReferralCode();
+                
+                // Check referral code validity
+                let referrerId = null;
+                if (referralCode) {
+                    referrerId = await validateReferralCode(referralCode);
+                }
+                
+                // Prepare user data
+                const userData = {
+                    email: email,
+                    points: referrerId ? 5 : 0, // Bonus for referral
+                    activeDays: 0,
+                    lastCheckIn: null,
+                    rewardStatus: 'NOT_ELIGIBLE',
+                    rewardRequestDate: null,
+                    upi: null,
+                    referralCode: userReferralCode,
+                    referredBy: referrerId ? referralCode : null,
+                    referralRewarded: false,
+                    joinDate: new Date().toISOString(),
+                    referrals: 0,
+                    referralPoints: 0,
+                    streak: 0,
+                    monthlyReferrals: 0,
+                    lastReferralMonth: new Date().getMonth()
+                };
+
+                // Save to Firebase
+                await database.ref(`users/${user.uid}`).set(userData);
+                
+                // Update referrer if applicable
+                if (referrerId) {
+                    await updateReferrerData(referrerId, user.uid, email);
+                }
+                
+                // Clear form
+                document.getElementById('register-email').value = '';
+                document.getElementById('register-password').value = '';
+                document.getElementById('referral-code').value = '';
+                
+                // Show success
+                successElement.textContent = 'Account created successfully! Logging you in...';
+                successElement.style.display = 'block';
+                
+                // Success toast
+                showToast('✅ Account created! Welcome to CheckIn30.');
+
+            } catch (error) {
+                console.error('Registration error:', error);
+                
+                let errorMessage = 'Registration failed. Please try again.';
+                
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'Email already registered. Please login instead.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email format.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'Password is too weak.';
+                        break;
+                }
+                
+                errorElement.textContent = errorMessage;
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+            }
+        }
+
+        // Handle Logout
+        async function handleLogout() {
+            try {
+                await auth.signOut();
+                currentUser = null;
+                userData = null;
+                stopTimer();
+                showScreen('auth-screen');
+                showToast('Logged out successfully');
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
         }
 
         // Load User Data
@@ -1336,7 +1641,7 @@
                 userData = snapshot.val();
                 
                 if (!userData) {
-                    // Create new user data
+                    // Create user data if not exists
                     const userReferralCode = generateReferralCode();
                     userData = {
                         email: currentUser.email,
@@ -1354,120 +1659,122 @@
                         referralPoints: 0,
                         streak: 0,
                         monthlyReferrals: 0,
-                        lastReferralMonth: new Date().getMonth(),
-                        totalEarnings: 0
+                        lastReferralMonth: new Date().getMonth()
                     };
                     
                     await database.ref(`users/${currentUser.uid}`).set(userData);
                 }
                 
-                updateUI();
-                showLoggedInState();
+                // Update UI with user data
+                updateUserUI();
                 
-                // Show welcome popup if first visit today
-                if (!userData.lastCheckIn || !isToday(new Date(userData.lastCheckIn))) {
-                    setTimeout(() => {
-                        openWelcomeModal();
-                        startWelcomeTimer();
-                    }, 1000);
-                }
+                // Show app screen
+                showScreen('app-container');
+                
+                // Show welcome popup (first time)
+                setTimeout(() => {
+                    openPopup('welcome-popup');
+                }, 1000);
+                
+                // Check daily check-in status
+                checkDailyCheckin();
                 
             } catch (error) {
                 console.error('Error loading user data:', error);
-                showToast('Error loading data');
+                showToast('Error loading data. Please refresh.');
             }
         }
 
-        // Update UI
-        function updateUI() {
+        // Update User UI
+        function updateUserUI() {
             if (!userData) return;
 
             // Update header
-            document.getElementById('header-username').textContent = userData.email.split('@')[0];
-            document.getElementById('header-points').textContent = userData.points || 0;
+            const username = userData.email.split('@')[0];
+            document.getElementById('app-username').textContent = username;
+            document.getElementById('app-email').textContent = userData.email;
             
-            // Update stats
-            const streak = calculateStreak();
+            // Update dashboard stats
             const activeDays = userData.activeDays || 0;
+            const streak = calculateStreak();
             const daysLeft = Math.max(0, 30 - activeDays);
+            const progressPercent = Math.min(100, (activeDays / 30) * 100);
             
             document.getElementById('current-streak').textContent = streak;
             document.getElementById('active-days').textContent = activeDays;
             document.getElementById('total-points').textContent = userData.points || 0;
-            document.getElementById('days-remaining').textContent = daysLeft;
-            
-            // Update progress bar
-            const progressPercent = Math.min(100, (activeDays / 30) * 100);
+            document.getElementById('days-left').textContent = daysLeft;
+            document.getElementById('days-completed').textContent = activeDays;
             document.getElementById('progress-percent').textContent = `${Math.round(progressPercent)}%`;
             document.getElementById('progress-fill').style.width = `${progressPercent}%`;
             
-            // Update progress days
-            updateProgressDays(activeDays);
+            // Update progress status
+            let statusText = 'Not Started';
+            if (activeDays > 0 && activeDays < 30) {
+                statusText = 'In Progress';
+            } else if (activeDays >= 30) {
+                statusText = 'Completed';
+            }
+            document.getElementById('progress-status').textContent = statusText;
             
-            // Update check-in button
-            if (userData.lastCheckIn && isToday(new Date(userData.lastCheckIn))) {
-                document.getElementById('checkin-button').disabled = true;
-                document.getElementById('checkin-text').textContent = 'Already Checked-in Today';
-                document.getElementById('checkin-button').innerHTML = '<i class="fas fa-check-circle"></i> Already Checked-in Today';
-            } else {
-                document.getElementById('checkin-button').disabled = false;
-                document.getElementById('checkin-text').textContent = 'Daily Check-in Available';
-                document.getElementById('checkin-button').innerHTML = '<i class="fas fa-unlock"></i> Daily Check-in Available';
+            // Update referral section
+            document.getElementById('user-referral-code').textContent = userData.referralCode || 'CK30-LOADING';
+            document.getElementById('total-referrals').textContent = userData.referrals || 0;
+            document.getElementById('referral-earnings').textContent = userData.referralPoints || 0;
+            
+            const currentMonth = new Date().getMonth();
+            const monthlyReferrals = (userData.lastReferralMonth === currentMonth) ? (userData.monthlyReferrals || 0) : 0;
+            const referralsLeft = Math.max(0, 5 - monthlyReferrals);
+            document.getElementById('referrals-left').textContent = referralsLeft;
+            
+            // Update profile section
+            document.getElementById('profile-email').textContent = userData.email;
+            
+            if (userData.joinDate) {
+                const joinDate = new Date(userData.joinDate);
+                document.getElementById('join-date').textContent = joinDate.toLocaleDateString();
             }
             
-            // Show/hide request status
-            if (userData.rewardStatus === 'PENDING') {
-                document.getElementById('request-status-section').style.display = 'block';
-                document.getElementById('request-status-text').textContent = 'Your reward request is processing. It will be completed in 3 days.';
-                if (userData.rewardRequestDate) {
-                    const requestDate = new Date(userData.rewardRequestDate);
-                    const deliveryDate = new Date(requestDate);
-                    deliveryDate.setDate(deliveryDate.getDate() + 3);
-                    document.getElementById('request-date').textContent = `Requested: ${requestDate.toLocaleDateString()} | Delivery: ${deliveryDate.toLocaleDateString()}`;
-                }
-            } else if (userData.rewardStatus === 'COMPLETED') {
-                document.getElementById('request-status-section').style.display = 'block';
-                document.getElementById('request-status-text').textContent = 'Your reward has been sent successfully!';
-            } else {
-                document.getElementById('request-status-section').style.display = 'none';
-            }
-            
-            // Show reward modal if eligible
-            if (activeDays >= 30 && userData.rewardStatus === 'NOT_ELIGIBLE') {
-                setTimeout(() => {
-                    openRewardModal();
-                }, 2000);
-            }
-        }
-
-        // Create Progress Days
-        function createProgressDays() {
-            const container = document.getElementById('progress-days');
-            container.innerHTML = '';
-            
-            for (let i = 1; i <= 30; i++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'day-marker';
-                dayDiv.textContent = i;
-                dayDiv.id = `day-${i}`;
-                container.appendChild(dayDiv);
-            }
-        }
-
-        // Update Progress Days
-        function updateProgressDays(activeDays) {
-            for (let i = 1; i <= 30; i++) {
-                const dayElement = document.getElementById(`day-${i}`);
-                if (i <= activeDays) {
-                    dayElement.classList.add('completed');
+            if (userData.lastCheckIn) {
+                const lastCheckin = new Date(userData.lastCheckIn);
+                const now = new Date();
+                const diffHours = Math.floor((now - lastCheckin) / (1000 * 60 * 60));
+                
+                if (diffHours < 24) {
+                    document.getElementById('last-checkin').textContent = 'Today';
+                } else if (diffHours < 48) {
+                    document.getElementById('last-checkin').textContent = 'Yesterday';
                 } else {
-                    dayElement.classList.remove('completed');
+                    document.getElementById('last-checkin').textContent = lastCheckin.toLocaleDateString();
                 }
-                if (i === activeDays + 1) {
-                    dayElement.classList.add('active');
-                } else {
-                    dayElement.classList.remove('active');
-                }
+            } else {
+                document.getElementById('last-checkin').textContent = 'Never';
+            }
+            
+            // Update reward status
+            const rewardStatus = userData.rewardStatus || 'NOT_ELIGIBLE';
+            let rewardStatusText = 'Not Eligible';
+            if (rewardStatus === 'PENDING') {
+                rewardStatusText = 'Processing';
+            } else if (rewardStatus === 'COMPLETED') {
+                rewardStatusText = 'Completed';
+            } else if (activeDays >= 30) {
+                rewardStatusText = 'Ready to Claim';
+            }
+            document.getElementById('reward-status-text').textContent = rewardStatusText;
+            
+            // Show/hide reward request section
+            if (activeDays >= 30 && rewardStatus === 'NOT_ELIGIBLE') {
+                document.getElementById('reward-request-section').style.display = 'block';
+            } else {
+                document.getElementById('reward-request-section').style.display = 'none';
+            }
+            
+            // Show/hide reward status
+            if (rewardStatus === 'PENDING' || rewardStatus === 'COMPLETED') {
+                document.getElementById('reward-status').style.display = 'block';
+            } else {
+                document.getElementById('reward-status').style.display = 'none';
             }
         }
 
@@ -1477,347 +1784,172 @@
             
             const lastCheckIn = new Date(userData.lastCheckIn);
             const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
             
             // Reset time for comparison
             lastCheckIn.setHours(0, 0, 0, 0);
             today.setHours(0, 0, 0, 0);
+            yesterday.setHours(0, 0, 0, 0);
             
             if (lastCheckIn.getTime() === today.getTime()) {
                 return userData.streak || 1;
-            }
-            
-            const yesterday = new Date(today);
-            yesterday.setDate(yesterday.getDate() - 1);
-            yesterday.setHours(0, 0, 0, 0);
-            
-            if (lastCheckIn.getTime() === yesterday.getTime()) {
+            } else if (lastCheckIn.getTime() === yesterday.getTime()) {
                 return (userData.streak || 1);
+            } else {
+                return 0;
             }
-            
-            return 0;
         }
 
-        // Check if date is today
-        function isToday(date) {
+        // Check Daily Check-in
+        function checkDailyCheckin() {
+            if (!userData || !userData.lastCheckIn) {
+                return;
+            }
+            
+            const lastCheckIn = new Date(userData.lastCheckIn);
             const today = new Date();
-            return date.getDate() === today.getDate() &&
-                   date.getMonth() === today.getMonth() &&
-                   date.getFullYear() === today.getFullYear();
+            
+            lastCheckIn.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            
+            if (lastCheckIn.getTime() === today.getTime()) {
+                // Already checked in today
+                document.getElementById('start-timer-btn').style.display = 'none';
+                document.getElementById('timer-message').textContent = '✅ Daily check-in completed';
+                document.getElementById('daily-checkin-btn').style.display = 'none';
+            }
         }
 
-        // Setup Activity Detection
-        function setupActivityDetection() {
-            const events = ['mousemove', 'touchstart', 'scroll', 'click', 'keydown'];
+        // Start Daily Timer
+        function startDailyTimer() {
+            timerActive = true;
+            timeLeft = 120; // 2 minutes
             
-            events.forEach(event => {
-                document.addEventListener(event, () => {
-                    activityDetected = true;
-                    lastActivityTime = Date.now();
-                }, { passive: true });
-            });
+            // Update UI
+            document.getElementById('start-timer-btn').style.display = 'none';
+            document.getElementById('timer-message').textContent = '⏳ Timer running... Browse website';
             
-            // Check for inactivity
-            setInterval(() => {
-                const inactiveTime = Date.now() - lastActivityTime;
-                if (inactiveTime > 10000) { // 10 seconds
-                    activityDetected = false;
+            // Start timer
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                // Update displays
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    stopTimer();
+                    unlockCheckinButton();
                 }
-            }, 5000);
-        }
-
-        // Show Logged In State
-        function showLoggedInState() {
-            document.getElementById('auth-buttons').style.display = 'none';
-            document.getElementById('user-menu').style.display = 'flex';
-            document.getElementById('main-content').style.display = 'block';
+            }, 1000);
             
-            // Close any open modals
-            closeLoginModal();
-            closeRegisterModal();
-        }
-
-        // Show Logged Out State
-        function showLoggedOutState() {
-            document.getElementById('auth-buttons').style.display = 'flex';
-            document.getElementById('user-menu').style.display = 'none';
-            document.getElementById('main-content').style.display = 'none';
-        }
-
-        // Open Modals
-        function openLoginModal() {
-            document.getElementById('login-modal').classList.add('active');
-            document.getElementById('login-email').focus();
-        }
-
-        function openRegisterModal() {
-            document.getElementById('register-modal').classList.add('active');
-            document.getElementById('register-email').focus();
-        }
-
-        function openWelcomeModal() {
-            if (!hasShownWelcomePopup) {
-                document.getElementById('welcome-modal').classList.add('active');
-                hasShownWelcomePopup = true;
-            }
-        }
-
-        function openCheckinModal() {
-            document.getElementById('checkin-modal').classList.add('active');
-            startCheckinTimer();
-        }
-
-        function openRewardModal() {
-            document.getElementById('reward-modal').classList.add('active');
-        }
-
-        // Close Modals
-        function closeLoginModal() {
-            document.getElementById('login-modal').classList.remove('active');
-            document.getElementById('login-error').textContent = '';
-            document.getElementById('login-email').value = '';
-            document.getElementById('login-password').value = '';
-        }
-
-        function closeRegisterModal() {
-            document.getElementById('register-modal').classList.remove('active');
-            document.getElementById('register-error').textContent = '';
-            document.getElementById('register-email').value = '';
-            document.getElementById('register-password').value = '';
-            document.getElementById('register-referral').value = '';
-        }
-
-        function closeWelcomeModal() {
-            document.getElementById('welcome-modal').classList.remove('active');
-            if (welcomeTimerInterval) {
-                clearInterval(welcomeTimerInterval);
-                welcomeTimerInterval = null;
-            }
-        }
-
-        function closeCheckinModal() {
-            document.getElementById('checkin-modal').classList.remove('active');
-            if (checkinTimerInterval) {
-                clearInterval(checkinTimerInterval);
-                checkinTimerInterval = null;
-            }
-        }
-
-        function closeRewardModal() {
-            document.getElementById('reward-modal').classList.remove('active');
-        }
-
-        // Start Timers
-        function startWelcomeTimer() {
-            welcomeTimeLeft = 120;
-            updateWelcomeTimer();
+            // Show timer popup
+            openPopup('timer-popup');
             
-            welcomeTimerInterval = setInterval(() => {
-                if (activityDetected) {
-                    welcomeTimeLeft--;
-                    updateWelcomeTimer();
-                    
-                    if (welcomeTimeLeft <= 0) {
-                        clearInterval(welcomeTimerInterval);
-                        document.getElementById('checkin-button').disabled = false;
-                        document.getElementById('checkin-text').textContent = 'Daily Check-in Available';
-                        document.getElementById('checkin-button').innerHTML = '<i class="fas fa-unlock"></i> Daily Check-in Available';
-                        showToast('Daily check-in unlocked!');
-                    }
+            // Start popup timer
+            updatePopupTimer();
+        }
+
+        // Update Timer Display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            // Main timer
+            document.getElementById('timer-display').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Popup timer
+            document.getElementById('popup-timer').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Progress bars
+            const progress = ((120 - timeLeft) / 120) * 100;
+            document.getElementById('timer-fill').style.width = `${progress}%`;
+            document.getElementById('popup-timer-fill').style.width = `${progress}%`;
+            document.getElementById('popup-timer-text').textContent = `${Math.round(progress)}%`;
+        }
+
+        // Update Popup Timer
+        function updatePopupTimer() {
+            const popupInterval = setInterval(() => {
+                if (!timerActive) {
+                    clearInterval(popupInterval);
+                    return;
+                }
+                
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Stop Timer
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            timerActive = false;
+        }
+
+        // Unlock Check-in Button
+        function unlockCheckinButton() {
+            document.getElementById('daily-checkin-btn').style.display = 'block';
+            document.getElementById('timer-message').textContent = '✅ Timer complete! Click to check-in';
+            showToast('🎉 Timer complete! Click "Complete Daily Check-in"');
+        }
+
+        // Open Check-in Popup
+        function openCheckinPopup() {
+            openPopup('checkin-popup');
+            
+            // Start countdown
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown-text');
+            const countdownDisplay = document.getElementById('checkin-countdown');
+            const closeButton = document.getElementById('checkin-close-btn');
+            
+            // Reset button
+            closeButton.disabled = true;
+            closeButton.innerHTML = '<i class="fas fa-times"></i> Close (5s)';
+            
+            // Clear existing countdown
+            if (checkinCountdown) clearInterval(checkinCountdown);
+            
+            checkinCountdown = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                countdownDisplay.textContent = countdown;
+                closeButton.innerHTML = `<i class="fas fa-times"></i> Close (${countdown}s)`;
+                
+                if (countdown <= 0) {
+                    clearInterval(checkinCountdown);
+                    closeButton.disabled = false;
+                    closeButton.innerHTML = '<i class="fas fa-times"></i> Close & Complete';
                 }
             }, 1000);
         }
 
-        function startCheckinTimer() {
-            checkinTimeLeft = 5;
-            updateCheckinTimer();
-            
-            checkinTimerInterval = setInterval(() => {
-                checkinTimeLeft--;
-                updateCheckinTimer();
-                
-                if (checkinTimeLeft <= 0) {
-                    clearInterval(checkinTimerInterval);
-                    document.getElementById('checkin-complete-btn').disabled = false;
-                    document.getElementById('checkin-close-btn').disabled = false;
-                    document.getElementById('checkin-countdown').textContent = 'Ready!';
-                }
-            }, 1000);
-        }
-
-        // Update Timers
-        function updateWelcomeTimer() {
-            const minutes = Math.floor(welcomeTimeLeft / 60);
-            const seconds = welcomeTimeLeft % 60;
-            document.getElementById('welcome-timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            
-            const progressPercent = ((120 - welcomeTimeLeft) / 120) * 100;
-            document.getElementById('welcome-progress-fill').style.width = `${progressPercent}%`;
-            document.getElementById('welcome-time-spent').textContent = `${Math.floor((120 - welcomeTimeLeft) / 60)}:${((120 - welcomeTimeLeft) % 60).toString().padStart(2, '0')}`;
-        }
-
-        function updateCheckinTimer() {
-            document.getElementById('checkin-countdown').textContent = checkinTimeLeft;
-            const progressPercent = ((5 - checkinTimeLeft) / 5) * 100;
-            document.getElementById('checkin-progress-fill').style.width = `${progressPercent}%`;
-        }
-
-        // Handle Login
-        async function handleLogin() {
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
-            const errorElement = document.getElementById('login-error');
-            
-            errorElement.textContent = '';
-            
-            if (!email || !password) {
-                errorElement.textContent = 'Please enter both email and password';
-                return;
-            }
-            
-            if (!isValidEmail(email)) {
-                errorElement.textContent = 'Please enter a valid email address';
-                return;
-            }
-            
+        // Complete Daily Check-in
+        async function completeDailyCheckin() {
             try {
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                
-                // Clear form
-                document.getElementById('login-email').value = '';
-                document.getElementById('login-password').value = '';
-                
-                // Show success
-                showToast('Login successful!');
-                closeLoginModal();
-                
-            } catch (error) {
-                let errorMessage = 'Login failed. Please try again.';
-                
-                switch (error.code) {
-                    case 'auth/user-not-found':
-                        errorMessage = 'No account found with this email.';
-                        break;
-                    case 'auth/wrong-password':
-                        errorMessage = 'Incorrect password.';
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage = 'Invalid email format.';
-                        break;
+                if (!currentUser || !userData) {
+                    showToast('Error: User not found');
+                    return;
                 }
-                
-                errorElement.textContent = errorMessage;
-            }
-        }
-
-        // Handle Register
-        async function handleRegister() {
-            const email = document.getElementById('register-email').value.trim();
-            const password = document.getElementById('register-password').value;
-            const referralCode = document.getElementById('register-referral').value.trim();
-            const errorElement = document.getElementById('register-error');
-            
-            errorElement.textContent = '';
-            
-            if (!email || !password) {
-                errorElement.textContent = 'Please enter both email and password';
-                return;
-            }
-            
-            if (!isValidEmail(email)) {
-                errorElement.textContent = 'Please enter a valid email address';
-                return;
-            }
-            
-            if (password.length < 6) {
-                errorElement.textContent = 'Password must be at least 6 characters';
-                return;
-            }
-            
-            try {
-                // Check referral code if provided
-                let referrerId = null;
-                if (referralCode) {
-                    referrerId = await validateReferralCode(referralCode);
-                }
-                
-                // Create user
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                
-                // Generate referral code
-                const userReferralCode = generateReferralCode();
-                
-                // Create user data
-                const userData = {
-                    email: email,
-                    points: referrerId ? 5 : 0, // Bonus for using referral
-                    activeDays: 0,
-                    lastCheckIn: null,
-                    rewardStatus: 'NOT_ELIGIBLE',
-                    rewardRequestDate: null,
-                    upi: null,
-                    referralCode: userReferralCode,
-                    referredBy: referrerId ? referralCode : null,
-                    referralRewarded: false,
-                    joinDate: new Date().toISOString(),
-                    referrals: 0,
-                    referralPoints: 0,
-                    streak: 0,
-                    monthlyReferrals: 0,
-                    lastReferralMonth: new Date().getMonth(),
-                    totalEarnings: 0
-                };
-                
-                // Save to database
-                await database.ref(`users/${user.uid}`).set(userData);
-                
-                // Update referrer if needed
-                if (referrerId) {
-                    await updateReferrerData(referrerId, user.uid, email);
-                }
-                
-                // Clear form
-                document.getElementById('register-email').value = '';
-                document.getElementById('register-password').value = '';
-                document.getElementById('register-referral').value = '';
-                
-                // Show success
-                showToast('Account created successfully!');
-                closeRegisterModal();
-                
-            } catch (error) {
-                let errorMessage = 'Registration failed. Please try again.';
-                
-                switch (error.code) {
-                    case 'auth/email-already-in-use':
-                        errorMessage = 'Email already registered. Please login instead.';
-                        break;
-                    case 'auth/weak-password':
-                        errorMessage = 'Password is too weak.';
-                        break;
-                    case 'auth/invalid-email':
-                        errorMessage = 'Invalid email format.';
-                        break;
-                }
-                
-                errorElement.textContent = errorMessage;
-            }
-        }
-
-        // Complete Check-in
-        async function completeCheckin() {
-            try {
-                if (!currentUser || !userData) return;
                 
                 const today = new Date();
                 const lastCheckIn = userData.lastCheckIn ? new Date(userData.lastCheckIn) : null;
                 
                 // Check if already checked in today
-                if (lastCheckIn && isToday(lastCheckIn)) {
-                    showToast('You have already checked in today!');
-                    closeCheckinModal();
-                    return;
+                if (lastCheckIn) {
+                    lastCheckIn.setHours(0, 0, 0, 0);
+                    today.setHours(0, 0, 0, 0);
+                    
+                    if (lastCheckIn.getTime() === today.getTime()) {
+                        showToast('You have already checked in today!');
+                        closePopup('checkin-popup');
+                        return;
+                    }
                 }
                 
                 // Calculate streak
@@ -1825,8 +1957,9 @@
                 if (lastCheckIn) {
                     const yesterday = new Date(today);
                     yesterday.setDate(yesterday.getDate() - 1);
+                    yesterday.setHours(0, 0, 0, 0);
                     
-                    if (lastCheckIn.toDateString() === yesterday.toDateString()) {
+                    if (lastCheckIn.getTime() === yesterday.getTime()) {
                         streak += 1;
                     } else {
                         streak = 1;
@@ -1844,7 +1977,7 @@
                 
                 // Update user data
                 const updates = {
-                    lastCheckIn: today.toISOString(),
+                    lastCheckIn: new Date().toISOString(),
                     activeDays: newActiveDays,
                     points: newPoints,
                     streak: streak
@@ -1856,38 +1989,43 @@
                 Object.assign(userData, updates);
                 
                 // Update UI
-                updateUI();
+                updateUserUI();
                 
-                // Show success
-                let message = `Check-in complete! +${basePoints} points earned.`;
+                // Close popup
+                closePopup('checkin-popup');
+                
+                // Reset timer UI
+                document.getElementById('start-timer-btn').style.display = 'none';
+                document.getElementById('daily-checkin-btn').style.display = 'none';
+                document.getElementById('timer-message').textContent = '✅ Daily check-in completed';
+                
+                // Show success message
+                let message = `✅ Daily check-in completed! +${basePoints} points earned.`;
                 if (streakBonus > 0) {
                     message += ` +${streakBonus} streak bonus!`;
                 }
                 showToast(message);
                 
-                // Close modal
-                closeCheckinModal();
-                
-                // Check for referral rewards
-                if (userData.referredBy && !userData.rewardRewarded) {
-                    await checkReferralRewards();
-                }
-                
                 // Check if reached 30 days
                 if (newActiveDays === 30) {
                     setTimeout(() => {
-                        openRewardModal();
-                    }, 1500);
+                        showToast('🎉 Congratulations! You completed 30 days! You can now request your reward.');
+                    }, 1000);
+                }
+                
+                // Check referral rewards
+                if (userData.referredBy && !userData.referralRewarded) {
+                    await checkAndRewardReferrer();
                 }
                 
             } catch (error) {
                 console.error('Error completing check-in:', error);
-                showToast('Error completing check-in');
+                showToast('Error completing check-in. Please try again.');
             }
         }
 
-        // Handle Reward Request
-        async function handleRewardRequest() {
+        // Submit Reward Request
+        async function submitRewardRequest() {
             const upiId = document.getElementById('reward-upi').value.trim();
             
             if (!upiId) {
@@ -1895,13 +2033,13 @@
                 return;
             }
             
-            if (!upiId.includes('@')) {
+            if (!upiId.includes('@') || upiId.length < 5) {
                 showToast('Please enter a valid UPI ID (e.g., name@upi)');
                 return;
             }
             
             try {
-                const button = document.getElementById('reward-submit-btn');
+                const button = document.getElementById('submit-reward-request');
                 button.disabled = true;
                 button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
                 
@@ -1920,103 +2058,58 @@
                 Object.assign(userData, updates);
                 
                 // Update UI
-                updateUI();
+                updateUserUI();
+                
+                // Close popup
+                closePopup('reward-request-popup');
                 
                 // Show success
-                showToast('Reward request submitted! Will be processed in 3 days.');
-                closeRewardModal();
+                showToast('✅ Reward request submitted! Will be sent within 3 days.');
                 
                 // Simulate completion after 3 days
                 setTimeout(async () => {
                     if (userData.rewardStatus === 'PENDING') {
                         await database.ref(`users/${currentUser.uid}/rewardStatus`).set('COMPLETED');
                         userData.rewardStatus = 'COMPLETED';
-                        updateUI();
-                        showToast('🎉 Your reward has been sent successfully!');
+                        updateUserUI();
+                        showToast('💰 Reward sent successfully!');
                     }
-                }, 3 * 24 * 60 * 60 * 1000);
+                }, 3 * 24 * 60 * 60 * 1000); // 3 days
                 
             } catch (error) {
                 console.error('Error submitting reward request:', error);
-                showToast('Error submitting request');
-                document.getElementById('reward-submit-btn').disabled = false;
-                document.getElementById('reward-submit-btn').innerHTML = '<i class="fas fa-paper-plane"></i> Submit Request';
+                showToast('Error submitting request. Please try again.');
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Reward Request';
             }
         }
 
-        // Check Referral Rewards
-        async function checkReferralRewards() {
-            if (!userData || !userData.referredBy || userData.rewardRewarded) return;
+        // Copy Referral Code
+        function copyReferralCode() {
+            const code = userData?.referralCode || 'CK30-LOADING';
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('📋 Referral code copied to clipboard!');
+            });
+        }
+
+        // Share Referral
+        function shareReferral() {
+            const code = userData?.referralCode || 'CK30-LOADING';
+            const message = `Join CheckIn30 using my referral code: ${code}\n\nEarn daily rewards by completing simple check-ins!`;
             
-            try {
-                if ((userData.activeDays || 0) >= 3) {
-                    // Find referrer
-                    const usersSnapshot = await database.ref('users').once('value');
-                    let referrerId = null;
-                    
-                    usersSnapshot.forEach((childSnapshot) => {
-                        const user = childSnapshot.val();
-                        if (user.referralCode === userData.referredBy) {
-                            referrerId = childSnapshot.key;
-                        }
-                    });
-                    
-                    if (!referrerId) return;
-                    
-                    // Get referrer data
-                    const referrerSnapshot = await database.ref(`users/${referrerId}`).once('value');
-                    const referrerData = referrerSnapshot.val();
-                    
-                    if (!referrerData) return;
-                    
-                    // Check monthly limit
-                    const currentMonth = new Date().getMonth();
-                    const lastRewardMonth = referrerData.lastReferralMonth;
-                    
-                    if (lastRewardMonth === currentMonth && (referrerData.monthlyReferrals || 0) >= 5) {
-                        return;
-                    }
-                    
-                    // Award points
-                    const referralPoints = 5;
-                    const newReferrerPoints = (referrerData.points || 0) + referralPoints;
-                    const newReferrals = (referrerData.referrals || 0) + 1;
-                    const newMonthlyReferrals = ((referrerData.lastReferralMonth === currentMonth) ? 
-                        (referrerData.monthlyReferrals || 0) : 0) + 1;
-                    
-                    // Update referrer
-                    await database.ref(`users/${referrerId}`).update({
-                        points: newReferrerPoints,
-                        referrals: newReferrals,
-                        monthlyReferrals: newMonthlyReferrals,
-                        lastReferralMonth: currentMonth,
-                        referralPoints: (referrerData.referralPoints || 0) + referralPoints
-                    });
-                    
-                    // Update current user
-                    await database.ref(`users/${currentUser.uid}`).update({
-                        referralRewarded: true
-                    });
-                    
-                    // If referrer is current user, update local data
-                    if (referrerId === currentUser.uid) {
-                        userData.points = newReferrerPoints;
-                        userData.referrals = newReferrals;
-                        updateUI();
-                        showToast(`🎉 +${referralPoints} points from referral!`);
-                    }
-                }
-            } catch (error) {
-                console.error('Error checking referral rewards:', error);
+            if (navigator.share) {
+                navigator.share({
+                    title: 'CheckIn30 - Earn Daily Rewards',
+                    text: message,
+                    url: window.location.href
+                });
+            } else {
+                copyReferralCode();
+                showToast('📋 Referral code copied. Share it with friends!');
             }
         }
 
-        // Helper Functions
-        function isValidEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-
+        // Generate Referral Code
         function generateReferralCode() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let code = 'CK30-';
@@ -2028,17 +2121,20 @@
             return code;
         }
 
+        // Validate Referral Code
         async function validateReferralCode(code) {
             try {
-                if (!code.startsWith('CK30-')) return null;
+                if (!code.startsWith('CK30-') || code.length !== 11) {
+                    return null;
+                }
                 
-                const usersSnapshot = await database.ref('users').once('value');
+                const snapshot = await database.ref('users').once('value');
                 let referrerId = null;
                 
-                usersSnapshot.forEach((childSnapshot) => {
-                    const user = childSnapshot.val();
+                snapshot.forEach((child) => {
+                    const user = child.val();
                     if (user.referralCode === code) {
-                        referrerId = childSnapshot.key;
+                        referrerId = child.key;
                     }
                 });
                 
@@ -2049,32 +2145,115 @@
             }
         }
 
+        // Update Referrer Data
         async function updateReferrerData(referrerId, newUserId, newUserEmail) {
             try {
+                const referrerRef = database.ref(`users/${referrerId}`);
+                const snapshot = await referrerRef.once('value');
+                const referrerData = snapshot.val();
+                
+                if (!referrerData) return;
+                
+                // Check monthly limit
+                const currentMonth = new Date().getMonth();
+                const lastRewardMonth = referrerData.lastReferralMonth;
+                
+                if (lastRewardMonth === currentMonth && (referrerData.monthlyReferrals || 0) >= 5) {
+                    return;
+                }
+                
+                // Update referrer data
+                const updates = {
+                    referrals: (referrerData.referrals || 0) + 1,
+                    monthlyReferrals: ((referrerData.lastReferralMonth === currentMonth) ? 
+                        (referrerData.monthlyReferrals || 0) : 0) + 1,
+                    lastReferralMonth: currentMonth
+                };
+                
+                await referrerRef.update(updates);
+                
+            } catch (error) {
+                console.error('Error updating referrer:', error);
+            }
+        }
+
+        // Check and Reward Referrer
+        async function checkAndRewardReferrer() {
+            if (!userData || !userData.referredBy || userData.referralRewarded) return;
+            
+            if ((userData.activeDays || 0) >= 3) {
+                // Find referrer
+                const snapshot = await database.ref('users').once('value');
+                let referrerId = null;
+                
+                snapshot.forEach((child) => {
+                    const user = child.val();
+                    if (user.referralCode === userData.referredBy) {
+                        referrerId = child.key;
+                    }
+                });
+                
+                if (!referrerId) return;
+                
+                // Award points
+                const referralPoints = 5;
                 const referrerRef = database.ref(`users/${referrerId}`);
                 const referrerSnapshot = await referrerRef.once('value');
                 const referrerData = referrerSnapshot.val();
                 
-                if (!referrerData) return;
+                const newPoints = (referrerData.points || 0) + referralPoints;
+                const newReferralPoints = (referrerData.referralPoints || 0) + referralPoints;
                 
-                // Add to referral list
-                const referralKey = database.ref(`users/${referrerId}/referralList`).push().key;
-                await database.ref(`users/${referrerId}/referralList/${referralKey}`).set({
-                    userId: newUserId,
-                    email: newUserEmail,
-                    date: new Date().toISOString(),
-                    status: 'PENDING'
+                await referrerRef.update({
+                    points: newPoints,
+                    referralPoints: newReferralPoints
                 });
                 
-            } catch (error) {
-                console.error('Error updating referrer data:', error);
+                // Mark as rewarded
+                await database.ref(`users/${currentUser.uid}`).update({
+                    referralRewarded: true
+                });
+                
+                userData.referralRewarded = true;
+                
+                // Update if referrer is current user
+                if (referrerId === currentUser.uid) {
+                    userData.points = newPoints;
+                    userData.referralPoints = newReferralPoints;
+                    updateUserUI();
+                    showToast(`🎉 +${referralPoints} points from referral!`);
+                }
             }
         }
 
-        // Logout
-        function logout() {
-            auth.signOut();
-            showToast('Logged out successfully');
+        // Show Screen
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            const screenElement = document.getElementById(screenId);
+            if (screenElement) {
+                screenElement.classList.add('active');
+            }
+        }
+
+        // Open Popup
+        function openPopup(popupId) {
+            const popup = document.getElementById(popupId);
+            if (popup) {
+                popup.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Close Popup
+        function closePopup(popupId) {
+            const popup = document.getElementById(popupId);
+            if (popup) {
+                popup.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
         }
 
         // Show Toast
