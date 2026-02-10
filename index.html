@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="ppck-ver" content="c9b1a3ff9bd44be0d4b2c42257dedb01" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CheckIn30 - Daily Streak Tracker</title>
+    <title>CheckIn30 - Daily Check-in & Earn Coins</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             min-height: 100vh;
             color: #333;
         }
@@ -48,13 +49,14 @@
             gap: 10px;
             font-size: 1.8rem;
             font-weight: 700;
-            color: #667eea;
+            color: #2575fc;
         }
 
         .logo i {
-            color: #764ba2;
+            color: #6a11cb;
         }
 
+        /* Auth Buttons */
         .auth-buttons button {
             padding: 10px 25px;
             border-radius: 8px;
@@ -62,18 +64,30 @@
             font-weight: 600;
             cursor: pointer;
             margin-left: 10px;
+            transition: all 0.3s;
         }
 
         .btn-login {
-            background: #667eea;
+            background: #2575fc;
             color: white;
+        }
+
+        .btn-login:hover {
+            background: #1a6ae3;
+            transform: translateY(-2px);
         }
 
         .btn-register {
-            background: #ed64a6;
+            background: #ff6b6b;
             color: white;
         }
 
+        .btn-register:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        /* User Profile */
         .user-profile {
             display: flex;
             align-items: center;
@@ -81,15 +95,27 @@
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .user-info h3 {
+            color: #2d3748;
+            font-size: 1.1rem;
+            margin-bottom: 3px;
+        }
+
+        .user-info p {
+            color: #718096;
+            font-size: 0.9rem;
         }
 
         /* Main Content */
@@ -102,28 +128,24 @@
         .hero {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            padding: 60px 40px;
+            padding: 50px 40px;
             text-align: center;
             margin-bottom: 40px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
         .hero h1 {
-            color: #4a5568;
+            color: #2d3748;
             font-size: 2.8rem;
             margin-bottom: 20px;
         }
 
         .hero p {
-            color: #718096;
+            color: #4a5568;
             font-size: 1.2rem;
             max-width: 700px;
             margin: 0 auto 30px;
-        }
-
-        /* Dashboard */
-        .dashboard {
-            display: none;
+            line-height: 1.6;
         }
 
         /* Stats Grid */
@@ -140,13 +162,13 @@
             border-radius: 15px;
             text-align: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            border-top: 5px solid #667eea;
+            border-top: 5px solid #2575fc;
         }
 
         .stat-value {
             font-size: 3rem;
             font-weight: 700;
-            color: #667eea;
+            color: #2575fc;
             margin-bottom: 10px;
         }
 
@@ -168,7 +190,7 @@
         .timer-display {
             font-size: 5rem;
             font-weight: 700;
-            color: #667eea;
+            color: #2575fc;
             margin: 30px 0;
             font-family: monospace;
         }
@@ -183,7 +205,7 @@
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(to right, #48bb78, #38a169);
+            background: linear-gradient(to right, #00b09b, #96c93d);
             width: 0%;
             transition: width 1s linear;
         }
@@ -207,41 +229,175 @@
         .calendar-day {
             aspect-ratio: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             border-radius: 10px;
-            font-weight: 600;
-            font-size: 1.2rem;
             background: #f7fafc;
             border: 2px solid #e2e8f0;
+            position: relative;
         }
 
         .calendar-day.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
             color: white;
-            border-color: #667eea;
+            border-color: #2575fc;
         }
 
-        /* Monthly Features Grid */
-        .features-grid {
+        .day-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .day-coin {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: #f6ad55;
+            font-weight: 600;
+        }
+
+        /* Coins Section */
+        .coins-section {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            text-align: center;
+            color: #2d3748;
+        }
+
+        .coins-display {
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 20px 0;
+            color: #2d3748;
+        }
+
+        /* About Section */
+        .about-section {
+            background: white;
+            border-radius: 15px;
+            padding: 50px 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .about-section h2 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-points {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
-            margin-bottom: 40px;
+            margin-top: 30px;
         }
 
-        .feature-card {
+        .about-point {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #2575fc;
+        }
+
+        /* Connect Section */
+        .connect-section {
             background: white;
-            padding: 30px;
             border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            text-align: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        /* Terms Section */
+        .terms-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .terms-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .terms-content h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
             text-align: center;
         }
 
-        .feature-icon {
-            font-size: 3rem;
-            color: #667eea;
-            margin-bottom: 20px;
+        .terms-list {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .terms-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        .terms-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #4a5568;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #2575fc;
+        }
+
+        /* Ad Containers */
+        .ad-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .ad-box {
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 10px;
+            padding: 30px;
+            display: inline-block;
+            min-width: 320px;
+            min-height: 100px;
         }
 
         /* Modal */
@@ -284,6 +440,7 @@
             color: #718096;
         }
 
+        /* Forms */
         .form-group {
             margin-bottom: 25px;
         }
@@ -292,7 +449,7 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #4a5568;
+            color: #2d3748;
         }
 
         .form-control {
@@ -304,25 +461,32 @@
         }
 
         .form-control:focus {
-            border-color: #667eea;
+            border-color: #2575fc;
             outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.1);
         }
 
         .btn-submit {
             width: 100%;
             padding: 15px;
-            background: #667eea;
+            background: #2575fc;
             color: white;
             border: none;
             border-radius: 10px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #1a6ae3;
+            transform: translateY(-2px);
         }
 
         /* Daily Popup */
         .daily-popup {
-            background: linear-gradient(135deg, #48bb78, #38a169);
+            background: linear-gradient(135deg, #00b09b, #96c93d);
             color: white;
         }
 
@@ -342,8 +506,21 @@
 
         .success-icon {
             font-size: 5rem;
-            color: #48bb78;
+            color: #00b09b;
             margin-bottom: 20px;
+        }
+
+        /* Strike Popup */
+        .strike-popup {
+            background: linear-gradient(135deg, #ff6b6b, #ffa726);
+            color: white;
+        }
+
+        .strike-timer {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 20px 0;
+            font-family: monospace;
         }
 
         /* Animations */
@@ -364,6 +541,10 @@
             100% { transform: scale(1); }
         }
 
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
@@ -375,6 +556,9 @@
             .calendar-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -383,7 +567,7 @@
     <header>
         <div class="container header-content">
             <div class="logo">
-                <i>📅</i>
+                <i class="fas fa-calendar-check"></i>
                 <span>CheckIn30</span>
             </div>
             
@@ -394,7 +578,10 @@
             
             <div class="user-profile" id="userProfile" style="display: none;">
                 <div class="user-avatar" id="userAvatar">U</div>
-                <span id="userName">User</span>
+                <div class="user-info">
+                    <h3 id="userName">User</h3>
+                    <p id="userCoins">0 Coins</p>
+                </div>
                 <button class="btn-login" onclick="logout()" style="padding: 8px 20px;">Logout</button>
             </div>
         </div>
@@ -406,72 +593,160 @@
             <!-- Login View -->
             <div id="loginView">
                 <div class="hero">
-                    <h1>Build Your 30-Day Streak</h1>
-                    <p>Check in daily for 30 days to unlock special rewards. Just visit daily and complete a simple task to maintain your streak!</p>
+                    <h1>Daily Check-in & Earn Coins</h1>
+                    <p>Visit daily for 1 minute, earn 10 coins each day, and build your streak. More coins = Better rewards!</p>
                     <div style="margin-top: 40px;">
-                        <button class="btn-login" onclick="showLoginModal()" style="padding: 15px 40px; font-size: 1.2rem;">Start Your Journey</button>
+                        <button class="btn-login" onclick="showLoginModal()" style="padding: 15px 40px; font-size: 1.2rem;">
+                            <i class="fas fa-sign-in-alt"></i> Login to Start
+                        </button>
+                        <button class="btn-register" onclick="showRegisterModal()" style="padding: 15px 40px; font-size: 1.2rem; margin-left: 15px;">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ad Code Here 1 -->
+                <div class="ad-container">
+                    <div class="ad-box">
+                        <div id="ad1">
+                            <!-- Ad will load here -->
+                        </div>
                     </div>
                 </div>
 
                 <!-- How It Works -->
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div style="font-size: 3rem; color: #667eea; margin-bottom: 15px;">📝</div>
-                        <h3 style="margin-bottom: 10px; color: #4a5568;">1. Register</h3>
-                        <p style="color: #718096;">Create your free account</p>
+                        <div style="font-size: 3rem; color: #2575fc; margin-bottom: 15px;">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <h3 style="margin-bottom: 10px; color: #2d3748;">Daily 1-Minute Visit</h3>
+                        <p style="color: #718096;">Visit for just 1 minute daily</p>
                     </div>
                     <div class="stat-card">
-                        <div style="font-size: 3rem; color: #667eea; margin-bottom: 15px;">⏰</div>
-                        <h3 style="margin-bottom: 10px; color: #4a5568;">2. Daily Timer</h3>
-                        <p style="color: #718096;">Complete 2-minute daily task</p>
+                        <div style="font-size: 3rem; color: #2575fc; margin-bottom: 15px;">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <h3 style="margin-bottom: 10px; color: #2d3748;">Earn 10 Coins Daily</h3>
+                        <p style="color: #718096;">Get 10 coins for each check-in</p>
                     </div>
                     <div class="stat-card">
-                        <div style="font-size: 3rem; color: #667eea; margin-bottom: 15px;">🔥</div>
-                        <h3 style="margin-bottom: 10px; color: #4a5568;">3. Build Streak</h3>
-                        <p style="color: #718096;">30 consecutive days</p>
+                        <div style="font-size: 3rem; color: #2575fc; margin-bottom: 15px;">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <h3 style="margin-bottom: 10px; color: #2d3748;">Build Your Streak</h3>
+                        <p style="color: #718096;">30-day streak challenge</p>
                     </div>
                     <div class="stat-card">
-                        <div style="font-size: 3rem; color: #667eea; margin-bottom: 15px;">🎁</div>
-                        <h3 style="margin-bottom: 10px; color: #4a5568;">4. Get Reward</h3>
-                        <p style="color: #718096;">Claim your special gift</p>
+                        <div style="font-size: 3rem; color: #2575fc; margin-bottom: 15px;">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <h3 style="margin-bottom: 10px; color: #2d3748;">Better Rewards</h3>
+                        <p style="color: #718096;">More coins = Better rewards</p>
                     </div>
+                </div>
+
+                <!-- Ad Code Here 2 -->
+                <div class="ad-container">
+                    <div class="ad-box">
+                        <div id="ad2">
+                            <!-- Ad will load here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Section -->
+                <div class="about-section">
+                    <h2>Why Choose CheckIn30?</h2>
+                    <div class="about-content">
+                        <p style="text-align: center; color: #4a5568; margin-bottom: 30px; line-height: 1.6;">
+                            CheckIn30 is the simplest way to earn rewards by building daily habits. Just visit our website for 1 minute daily, earn coins, and claim exciting rewards based on your coin balance.
+                        </p>
+                        <div class="about-points">
+                            <div class="about-point">
+                                <h3 style="color: #2d3748; margin-bottom: 10px;"><i class="fas fa-shield-alt" style="color: #2575fc; margin-right: 10px;"></i> Secure Platform</h3>
+                                <p style="color: #718096;">Your data is protected with Firebase authentication and secure encryption.</p>
+                            </div>
+                            <div class="about-point">
+                                <h3 style="color: #2d3748; margin-bottom: 10px;"><i class="fas fa-bolt" style="color: #00b09b; margin-right: 10px;"></i> Instant Coins</h3>
+                                <p style="color: #718096;">Coins are added instantly after each successful daily check-in.</p>
+                            </div>
+                            <div class="about-point">
+                                <h3 style="color: #2d3748; margin-bottom: 10px;"><i class="fas fa-trophy" style="color: #f6ad55; margin-right: 10px;"></i> Fair Rewards</h3>
+                                <p style="color: #718096;">Everyone gets rewards based on their coin collection. More coins = Better rewards!</p>
+                            </div>
+                            <div class="about-point">
+                                <h3 style="color: #2d3748; margin-bottom: 10px;"><i class="fas fa-headset" style="color: #ff6b6b; margin-right: 10px;"></i> 24/7 Support</h3>
+                                <p style="color: #718096;">We're always here to help you with any questions or issues.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ad Code Here 3 -->
+                <div class="ad-container">
+                    <div class="ad-box">
+                        <div id="ad3">
+                            <!-- Ad will load here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Connect Section -->
+                <div class="connect-section">
+                    <h2 style="color: #2d3748; margin-bottom: 20px;">Start Your Journey Today!</h2>
+                    <p style="color: #4a5568; margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                        Join thousands of users who are already earning coins and getting rewards through daily check-ins.
+                    </p>
+                    <button class="btn-register" onclick="showRegisterModal()" style="padding: 15px 50px; font-size: 1.2rem;">
+                        <i class="fas fa-rocket"></i> Get Started Free
+                    </button>
                 </div>
             </div>
 
             <!-- Dashboard (After Login) -->
-            <div class="dashboard" id="dashboard">
+            <div class="dashboard" id="dashboard" style="display: none;">
                 <!-- Welcome -->
                 <div class="hero">
                     <h1 id="welcomeText">Welcome Back!</h1>
-                    <p id="userEmailText" style="color: #718096;">Ready for your daily check-in?</p>
+                    <p id="userEmailText" style="color: #4a5568;">Your daily check-in starts automatically in <span id="autoStartCountdown">5</span> seconds...</p>
+                </div>
+
+                <!-- Ad Code Here 4 -->
+                <div class="ad-container">
+                    <div class="ad-box">
+                        <div id="ad4">
+                            <!-- Ad will load here -->
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Stats -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-value" id="currentStreak">0</div>
-                        <div class="stat-label">Current Streak</div>
+                        <div class="stat-label">Day Streak</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="totalCheckins">0</div>
-                        <div class="stat-label">Total Check-ins</div>
+                        <div class="stat-value" id="totalCoins">0</div>
+                        <div class="stat-label">Total Coins</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value" id="daysRemaining">30</div>
                         <div class="stat-label">Days Remaining</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="rewardStatus">No</div>
-                        <div class="stat-label">Reward Ready</div>
+                        <div class="stat-value" id="todayCoins">0</div>
+                        <div class="stat-label">Today's Coins</div>
                     </div>
                 </div>
 
                 <!-- Timer Section -->
                 <div class="timer-section">
-                    <h2 style="color: #4a5568; margin-bottom: 20px;">Daily Check-in Task</h2>
-                    <p style="color: #718096; margin-bottom: 20px;">Complete this 2-minute task to continue your streak</p>
+                    <h2 style="color: #2d3748; margin-bottom: 10px;">Daily Check-in Timer</h2>
+                    <p style="color: #718096; margin-bottom: 20px;">Stay on this page for 1 minute to earn 10 coins</p>
                     
-                    <div class="timer-display" id="timerDisplay">02:00</div>
+                    <div class="timer-display" id="timerDisplay">01:00</div>
                     
                     <div class="progress-container">
                         <div class="progress-bar" id="progressBar"></div>
@@ -479,71 +754,160 @@
                     
                     <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
                         <button class="btn-login" id="startTimerBtn" onclick="startTimer()" style="padding: 15px 40px; font-size: 1.1rem;">
-                            Start Daily Task
+                            <i class="fas fa-play"></i> Start Timer
                         </button>
-                        <button class="btn-register" id="completeBtn" onclick="completeCheckin()" style="display: none; padding: 15px 40px; font-size: 1.1rem;">
-                            Complete Check-in
+                        <button class="btn-register" id="completeBtn" onclick="showStrikePopup()" style="display: none; padding: 15px 40px; font-size: 1.1rem;">
+                            <i class="fas fa-check-circle"></i> Earn 10 Coins
                         </button>
                         <button class="btn-login" id="resetBtn" onclick="resetTimer()" style="display: none; padding: 15px 40px; font-size: 1.1rem; background: #718096;">
-                            Reset
+                            <i class="fas fa-redo"></i> Reset
                         </button>
+                    </div>
+                </div>
+
+                <!-- Ad Code Here 5 -->
+                <div class="ad-container">
+                    <div class="ad-box">
+                        <div id="ad5">
+                            <!-- Ad will load here -->
+                        </div>
                     </div>
                 </div>
 
                 <!-- Streak Calendar -->
                 <div class="streak-calendar">
-                    <h2 style="color: #4a5568; margin-bottom: 20px; text-align: center;">Your 30-Day Calendar</h2>
+                    <h2 style="color: #2d3748; margin-bottom: 20px; text-align: center;">Your 30-Day Progress</h2>
                     <div class="calendar-grid" id="calendarGrid">
                         <!-- Days will be generated by JavaScript -->
                     </div>
                 </div>
 
-                <!-- Monthly Features -->
-                <div class="streak-calendar">
-                    <h2 style="color: #4a5568; margin-bottom: 30px; text-align: center;">Monthly Challenges</h2>
-                    <div class="features-grid">
-                        <div class="feature-card">
-                            <div class="feature-icon">🎯</div>
-                            <h3 style="color: #4a5568; margin-bottom: 15px;">Perfect Month</h3>
-                            <p style="color: #718096;">Check in every day for a full month to earn bonus points</p>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon">⚡</div>
-                            <h3 style="color: #4a5568; margin-bottom: 15px;">Early Bird</h3>
-                            <p style="color: #718096;">Complete check-in before 10 AM for extra streak</p>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon">🏆</div>
-                            <h3 style="color: #4a5568; margin-bottom: 15px;">Consistency King</h3>
-                            <p style="color: #718096;">Maintain 90-day streak for elite status</p>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon">🤝</div>
-                            <h3 style="color: #4a5568; margin-bottom: 15px;">Refer Friends</h3>
-                            <p style="color: #718096;">Invite friends to get streak multipliers</p>
+                <!-- Ad Code Here 6 -->
+                <div class="ad-container">
+                    <div class="ad-box">
+                        <div id="ad6">
+                            <!-- Ad will load here -->
                         </div>
                     </div>
                 </div>
 
-                <!-- Reward Section -->
-                <div class="timer-section" id="rewardSection" style="display: none;">
-                    <h2 style="color: #4a5568; margin-bottom: 20px;">🎉 Congratulations!</h2>
-                    <p style="color: #718096; margin-bottom: 30px; font-size: 1.1rem;">
-                        You've completed 30 days! Claim your reward now.
+                <!-- Coins Section -->
+                <div class="coins-section">
+                    <h2 style="margin-bottom: 10px;">🎯 Coin Collection</h2>
+                    <p style="margin-bottom: 20px; opacity: 0.9;">More coins = Better rewards at the end of the month!</p>
+                    <div class="coins-display" id="totalCoinsDisplay">0</div>
+                    <p style="font-size: 1.1rem; margin-bottom: 30px;">
+                        Next Reward at: <span id="nextRewardAt">500 Coins</span>
                     </p>
-                    <button class="btn-register" onclick="showRewardModal()" style="padding: 15px 50px; font-size: 1.2rem;">
-                        Claim Your Reward
+                    <button class="btn-submit" onclick="showRewardModal()" style="background: #2d3748; color: white;">
+                        <i class="fas fa-gift"></i> Request Monthly Reward
+                    </button>
+                </div>
+
+                <!-- Ad Code Here 7 -->
+                <div class="ad-container">
+                    <div class="ad-box">
+                        <div id="ad7">
+                            <!-- Ad will load here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Why CheckIn30 -->
+                <div class="about-section">
+                    <h2>How Coins Lead to Better Rewards</h2>
+                    <div class="about-content">
+                        <p style="text-align: center; color: #4a5568; margin-bottom: 30px; line-height: 1.6; font-size: 1.1rem;">
+                            The more coins you collect, the better your monthly reward will be! We believe in rewarding consistency and dedication.
+                        </p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px;">
+                            <div style="text-align: center; padding: 20px; background: #f0f7ff; border-radius: 12px;">
+                                <div style="font-size: 2rem; color: #2575fc; margin-bottom: 10px;">0-100</div>
+                                <h3 style="color: #2d3748; margin-bottom: 10px;">Basic Reward</h3>
+                                <p style="color: #718096;">Small gift or discount</p>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: #f0f7ff; border-radius: 12px;">
+                                <div style="font-size: 2rem; color: #2575fc; margin-bottom: 10px;">100-500</div>
+                                <h3 style="color: #2d3748; margin-bottom: 10px;">Good Reward</h3>
+                                <p style="color: #718096;">Better value rewards</p>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: #f0f7ff; border-radius: 12px;">
+                                <div style="font-size: 2rem; color: #2575fc; margin-bottom: 10px;">500+</div>
+                                <h3 style="color: #2d3748; margin-bottom: 10px;">Premium Reward</h3>
+                                <p style="color: #718096;">High-value gifts</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ad Code Here 8 -->
+                <div class="ad-container">
+                    <div class="ad-box">
+                        <div id="ad8">
+                            <!-- Ad will load here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terms & Conditions -->
+                <div class="terms-section">
+                    <div class="terms-content">
+                        <h2>Terms & Conditions</h2>
+                        <ul class="terms-list">
+                            <li><i class="fas fa-check-circle" style="color: #00b09b; margin-right: 10px;"></i> Daily check-in requires 1 minute of active time on the website</li>
+                            <li><i class="fas fa-check-circle" style="color: #00b09b; margin-right: 10px;"></i> 10 coins are awarded for each successful daily check-in</li>
+                            <li><i class="fas fa-check-circle" style="color: #00b09b; margin-right: 10px;"></i> Monthly rewards are based on total coins collected</li>
+                            <li><i class="fas fa-check-circle" style="color: #00b09b; margin-right: 10px;"></i> Rewards are processed within 24 hours of request</li>
+                            <li><i class="fas fa-check-circle" style="color: #00b09b; margin-right: 10px;"></i> One reward request allowed per month</li>
+                            <li><i class="fas fa-check-circle" style="color: #00b09b; margin-right: 10px;"></i> Coins reset to zero after reward request</li>
+                            <li><i class="fas fa-check-circle" style="color: #00b09b; margin-right: 10px;"></i> Account sharing is strictly prohibited</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Connect Us -->
+                <div class="connect-section">
+                    <h2 style="color: #2d3748; margin-bottom: 20px;">Need Help?</h2>
+                    <p style="color: #4a5568; margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                        Have questions about your coins, rewards, or account? We're here to help!
+                    </p>
+                    <button class="btn-submit" onclick="contactSupport()" style="background: #ff6b6b;">
+                        <i class="fas fa-headset"></i> Contact Support
                     </button>
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div style="margin-bottom: 30px;">
+                <div class="logo" style="justify-content: center; margin-bottom: 20px;">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>CheckIn30</span>
+                </div>
+                <p style="color: #4a5568; max-width: 600px; margin: 0 auto 20px;">
+                    Build daily habits, earn coins, and get rewarded for your consistency.
+                </p>
+            </div>
+            <div class="footer-links">
+                <a href="#" onclick="showTerms()">Terms & Conditions</a>
+                <a href="#" onclick="contactSupport()">Contact Us</a>
+                <a href="#" onclick="showPrivacy()">Privacy Policy</a>
+                <a href="#" onclick="showAbout()">About</a>
+            </div>
+            <p style="color: #718096; margin-top: 30px;">
+                &copy; 2023 CheckIn30. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
     <!-- Login Modal -->
     <div class="modal" id="loginModal">
         <div class="modal-content">
             <button class="modal-close" onclick="hideModal('loginModal')">×</button>
-            <h2 style="text-align: center; margin-bottom: 30px; color: #4a5568;">Login to CheckIn30</h2>
+            <h2 style="text-align: center; margin-bottom: 30px; color: #2d3748;">Login to CheckIn30</h2>
             <form id="loginForm" onsubmit="event.preventDefault(); handleLogin()">
                 <div class="form-group">
                     <label>Email Address</label>
@@ -553,11 +917,13 @@
                     <label>Password</label>
                     <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
                 </div>
-                <button type="submit" class="btn-submit">Login</button>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
             </form>
             <p style="text-align: center; margin-top: 20px; color: #718096;">
                 Don't have an account? 
-                <a href="#" onclick="showRegisterModal()" style="color: #667eea; font-weight: 600;">Register here</a>
+                <a href="#" onclick="showRegisterModal()" style="color: #2575fc; font-weight: 600;">Register here</a>
             </p>
         </div>
     </div>
@@ -566,7 +932,7 @@
     <div class="modal" id="registerModal">
         <div class="modal-content">
             <button class="modal-close" onclick="hideModal('registerModal')">×</button>
-            <h2 style="text-align: center; margin-bottom: 30px; color: #4a5568;">Create Account</h2>
+            <h2 style="text-align: center; margin-bottom: 30px; color: #2d3748;">Create Your Account</h2>
             <form id="registerForm" onsubmit="event.preventDefault(); handleRegister()">
                 <div class="form-group">
                     <label>Full Name</label>
@@ -580,11 +946,13 @@
                     <label>Password</label>
                     <input type="password" id="registerPassword" class="form-control" placeholder="Create a password (min. 6 characters)" required>
                 </div>
-                <button type="submit" class="btn-submit">Create Account</button>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
             </form>
             <p style="text-align: center; margin-top: 20px; color: #718096;">
                 Already have an account? 
-                <a href="#" onclick="showLoginModal()" style="color: #667eea; font-weight: 600;">Login here</a>
+                <a href="#" onclick="showLoginModal()" style="color: #2575fc; font-weight: 600;">Login here</a>
             </p>
         </div>
     </div>
@@ -596,10 +964,44 @@
             <div class="popup-icon">🎯</div>
             <h2 style="margin-bottom: 15px;">Daily Check-in Time!</h2>
             <p style="margin-bottom: 30px; opacity: 0.9;">
-                Ready to continue your streak? Complete today's task to move closer to your reward!
+                Welcome back! Your 1-minute timer will start automatically in <span id="popupCountdown">5</span> seconds.
             </p>
-            <button class="btn-submit" onclick="startTimerFromPopup()" style="background: white; color: #48bb78;">
-                Start Daily Task
+            
+            <!-- Ad Code Here in Popup -->
+            <div class="ad-box" style="margin: 20px 0; background: rgba(255,255,255,0.2); border: none;">
+                <div id="popupAd">
+                    <!-- Ad will load here -->
+                </div>
+            </div>
+            
+            <button class="btn-submit" onclick="startTimerFromPopup()" style="background: white; color: #00b09b;">
+                <i class="fas fa-play-circle"></i> Start Timer Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Strike Popup (For 5-second ad) -->
+    <div class="modal strike-popup" id="strikePopup">
+        <div class="modal-content popup-content">
+            <button class="modal-close" onclick="hideModal('strikePopup')">×</button>
+            <div class="popup-icon">🔥</div>
+            <h2 style="margin-bottom: 15px;">Earn Your Daily Coins!</h2>
+            <p style="margin-bottom: 20px; opacity: 0.9;">
+                Watch this short ad for 5 seconds to claim your 10 coins
+            </p>
+            
+            <!-- Ad Code Here in Strike Popup -->
+            <div class="ad-box" style="margin: 20px 0; background: rgba(255,255,255,0.2); border: none; min-height: 150px;">
+                <div id="strikeAd">
+                    <!-- Ad will load here -->
+                </div>
+            </div>
+            
+            <div class="strike-timer" id="strikeTimer">5</div>
+            <p style="margin-bottom: 30px;">Seconds remaining...</p>
+            
+            <button class="btn-submit" id="claimCoinsBtn" onclick="completeCheckin()" style="background: white; color: #ff6b6b; display: none;">
+                <i class="fas fa-coins"></i> Claim 10 Coins
             </button>
         </div>
     </div>
@@ -608,24 +1010,32 @@
     <div class="modal" id="rewardModal">
         <div class="modal-content">
             <button class="modal-close" onclick="hideModal('rewardModal')">×</button>
-            <h2 style="text-align: center; margin-bottom: 30px; color: #4a5568;">Claim Your Reward</h2>
+            <h2 style="text-align: center; margin-bottom: 30px; color: #2d3748;">Request Monthly Reward</h2>
             <p style="color: #718096; margin-bottom: 30px; text-align: center;">
-                Congratulations on completing 30 days! Please provide your details to receive your reward.
+                You have <span id="rewardCoins">0</span> coins. Enter your UPI ID to receive your reward.
             </p>
+            
+            <!-- Ad Code Here in Reward Modal -->
+            <div class="ad-box" style="margin: 20px 0;">
+                <div id="rewardAd">
+                    <!-- Ad will load here -->
+                </div>
+            </div>
+            
             <form id="rewardForm" onsubmit="event.preventDefault(); submitRewardRequest()">
+                <div class="form-group">
+                    <input type="text" id="rewardUpi" class="form-control" placeholder="Enter your UPI ID (e.g., username@upi)" required>
+                </div>
                 <div class="form-group">
                     <input type="text" id="rewardName" class="form-control" placeholder="Your full name" required>
                 </div>
-                <div class="form-group">
-                    <input type="email" id="rewardEmail" class="form-control" placeholder="Your email address" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="rewardUpi" class="form-control" placeholder="Your UPI ID (for cash rewards)" required>
-                </div>
-                <button type="submit" class="btn-submit" style="background: #ed64a6;">
-                    Submit Reward Request
+                <button type="submit" class="btn-submit" style="background: #ff6b6b;">
+                    <i class="fas fa-paper-plane"></i> Submit Reward Request
                 </button>
             </form>
+            <p style="text-align: center; margin-top: 20px; color: #718096; font-size: 0.9rem;">
+                Reward value depends on your total coins. More coins = Better reward!
+            </p>
         </div>
     </div>
 
@@ -634,7 +1044,7 @@
         <div class="modal-content success-content">
             <button class="modal-close" onclick="hideModal('successModal')">×</button>
             <div class="success-icon">✓</div>
-            <h2 id="successTitle" style="color: #4a5568; margin-bottom: 15px;">Success!</h2>
+            <h2 id="successTitle" style="color: #2d3748; margin-bottom: 15px;">Success!</h2>
             <p id="successMessage" style="color: #718096; margin-bottom: 30px;"></p>
             <button class="btn-submit" onclick="hideModal('successModal')">Continue</button>
         </div>
@@ -671,7 +1081,11 @@
         let currentUser = null;
         let userData = null;
         let timerInterval = null;
-        let timerSeconds = 120;
+        let timerSeconds = 60; // 1 minute
+        let strikeTimerInterval = null;
+        let strikeSeconds = 5;
+        let autoStartCountdown = 5;
+        let autoStartInterval = null;
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
@@ -688,6 +1102,9 @@
 
             // Generate calendar days
             generateCalendar();
+            
+            // Load ads
+            loadAds();
         });
 
         // View Functions
@@ -703,6 +1120,9 @@
             document.getElementById('dashboard').style.display = 'block';
             document.getElementById('authButtons').style.display = 'none';
             document.getElementById('userProfile').style.display = 'block';
+            
+            // Start auto-timer countdown
+            startAutoTimerCountdown();
         }
 
         // Modal Functions
@@ -723,7 +1143,20 @@
         }
 
         function showRewardModal() {
-            showModal('rewardModal');
+            if (userData && userData.coins > 0) {
+                document.getElementById('rewardCoins').textContent = userData.coins || 0;
+                showModal('rewardModal');
+            } else {
+                showSuccess('No Coins Yet', 'Earn some coins first by daily check-ins!');
+            }
+        }
+
+        function showStrikePopup() {
+            strikeSeconds = 5;
+            document.getElementById('strikeTimer').textContent = '5';
+            document.getElementById('claimCoinsBtn').style.display = 'none';
+            showModal('strikePopup');
+            startStrikeTimer();
         }
 
         function showSuccess(title, message) {
@@ -764,28 +1197,29 @@
                 const userData = {
                     name: name,
                     email: email,
+                    coins: 0,
                     streak: 0,
                     totalCheckins: 0,
                     lastCheckin: null,
                     checkedInToday: false,
-                    rewardEligible: false,
                     rewardRequested: false,
                     createdAt: new Date().toISOString(),
-                    monthlyChallenges: {
-                        perfectMonth: false,
-                        earlyBird: 0,
-                        consistency: 0,
-                        referrals: 0
-                    }
+                    monthlyData: {}
                 };
 
                 await database.ref('users/' + user.uid).set(userData);
 
                 // Send Telegram notification
-                await sendTelegramNotification(`📝 NEW REGISTRATION\nName: ${name}\nEmail: ${email}\nTime: ${new Date().toLocaleString()}`);
+                await sendTelegramNotification(
+                    `📝 NEW USER REGISTERED\n` +
+                    `Name: ${name}\n` +
+                    `Email: ${email}\n` +
+                    `Time: ${new Date().toLocaleString()}\n` +
+                    `User ID: ${user.uid.substring(0, 8)}...`
+                );
 
                 hideModal('registerModal');
-                showSuccess('Account Created!', 'Welcome to CheckIn30!');
+                showSuccess('Account Created!', 'Welcome to CheckIn30! Start earning coins today!');
 
             } catch (error) {
                 alert('Registration failed: ' + error.message);
@@ -810,11 +1244,6 @@
                 if (userData) {
                     updateUI();
                     checkDailyCheckin();
-                    
-                    // Show reward section if eligible
-                    if (userData.streak >= 30 && !userData.rewardRequested) {
-                        document.getElementById('rewardSection').style.display = 'block';
-                    }
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
@@ -827,23 +1256,33 @@
             // Update user info
             document.getElementById('userName').textContent = userData.name;
             document.getElementById('userAvatar').textContent = userData.name.charAt(0).toUpperCase();
+            document.getElementById('userCoins').textContent = (userData.coins || 0) + ' Coins';
             document.getElementById('welcomeText').textContent = `Welcome, ${userData.name}!`;
             document.getElementById('userEmailText').textContent = currentUser.email;
 
             // Update stats
             const streak = userData.streak || 0;
+            const coins = userData.coins || 0;
+            
             document.getElementById('currentStreak').textContent = streak;
-            document.getElementById('totalCheckins').textContent = userData.totalCheckins || 0;
+            document.getElementById('totalCoins').textContent = coins;
+            document.getElementById('totalCoinsDisplay').textContent = coins;
 
             const daysRemaining = Math.max(0, 30 - streak);
             document.getElementById('daysRemaining').textContent = daysRemaining;
 
-            const isEligible = streak >= 30;
-            document.getElementById('rewardStatus').textContent = isEligible ? 'Yes' : 'No';
-            document.getElementById('rewardStatus').style.color = isEligible ? '#48bb78' : '#e53e3e';
+            // Today's coins (0 if already checked in today)
+            const today = new Date().toDateString();
+            const lastCheckin = userData.lastCheckin ? new Date(userData.lastCheckin).toDateString() : null;
+            const todayCoins = (lastCheckin === today) ? 10 : 0;
+            document.getElementById('todayCoins').textContent = todayCoins;
+
+            // Update next reward threshold
+            const nextThreshold = Math.ceil((coins + 100) / 100) * 100;
+            document.getElementById('nextRewardAt').textContent = nextThreshold + ' Coins';
 
             // Update calendar
-            updateCalendar(streak);
+            updateCalendar(streak, coins);
         }
 
         function generateCalendar() {
@@ -853,19 +1292,34 @@
             for (let i = 1; i <= 30; i++) {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'calendar-day';
-                dayDiv.textContent = i;
                 dayDiv.id = `day${i}`;
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = i;
+                
+                const dayCoin = document.createElement('div');
+                dayCoin.className = 'day-coin';
+                dayCoin.id = `dayCoin${i}`;
+                dayCoin.textContent = '+10';
+                
+                dayDiv.appendChild(dayNumber);
+                dayDiv.appendChild(dayCoin);
                 calendarGrid.appendChild(dayDiv);
             }
         }
 
-        function updateCalendar(streak) {
+        function updateCalendar(streak, totalCoins) {
             for (let i = 1; i <= 30; i++) {
                 const dayDiv = document.getElementById(`day${i}`);
+                const dayCoin = document.getElementById(`dayCoin${i}`);
+                
                 if (i <= streak) {
                     dayDiv.classList.add('active');
+                    dayCoin.textContent = '✓ 10';
                 } else {
                     dayDiv.classList.remove('active');
+                    dayCoin.textContent = '+10';
                 }
             }
         }
@@ -892,15 +1346,51 @@
             if (!userData.checkedInToday) {
                 setTimeout(() => {
                     showModal('dailyPopup');
+                    startPopupCountdown();
                 }, 1000);
             }
+        }
+
+        // Auto Timer Countdown
+        function startAutoTimerCountdown() {
+            if (userData && userData.checkedInToday) return;
+            
+            autoStartCountdown = 5;
+            const countdownElement = document.getElementById('autoStartCountdown');
+            
+            autoStartInterval = setInterval(() => {
+                autoStartCountdown--;
+                countdownElement.textContent = autoStartCountdown;
+                
+                if (autoStartCountdown <= 0) {
+                    clearInterval(autoStartInterval);
+                    startTimer();
+                }
+            }, 1000);
+        }
+
+        // Popup Countdown
+        function startPopupCountdown() {
+            let countdown = 5;
+            const countdownElement = document.getElementById('popupCountdown');
+            
+            const popupInterval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(popupInterval);
+                    startTimerFromPopup();
+                }
+            }, 1000);
         }
 
         // Timer Functions
         function startTimer() {
             if (timerInterval) clearInterval(timerInterval);
+            if (autoStartInterval) clearInterval(autoStartInterval);
 
-            timerSeconds = 120;
+            timerSeconds = 60;
             updateTimerDisplay();
             document.getElementById('progressBar').style.width = '0%';
 
@@ -909,13 +1399,16 @@
             document.getElementById('completeBtn').style.display = 'none';
             document.getElementById('resetBtn').style.display = 'inline-block';
 
+            // Hide daily popup if open
+            hideModal('dailyPopup');
+
             // Start timer
             timerInterval = setInterval(() => {
                 timerSeconds--;
                 updateTimerDisplay();
 
                 // Update progress bar
-                const progress = ((120 - timerSeconds) / 120) * 100;
+                const progress = ((60 - timerSeconds) / 60) * 100;
                 document.getElementById('progressBar').style.width = `${progress}%`;
 
                 if (timerSeconds <= 0) {
@@ -927,7 +1420,7 @@
                     document.getElementById('completeBtn').style.display = 'inline-block';
                     document.getElementById('resetBtn').style.display = 'inline-block';
 
-                    showSuccess('Task Complete!', 'Click "Complete Check-in" to add to your streak');
+                    showSuccess('Timer Complete!', 'Click "Earn 10 Coins" to watch ad and claim your coins');
                 }
             }, 1000);
         }
@@ -943,7 +1436,7 @@
                 timerInterval = null;
             }
 
-            timerSeconds = 120;
+            timerSeconds = 60;
             updateTimerDisplay();
             document.getElementById('progressBar').style.width = '0%';
 
@@ -959,6 +1452,26 @@
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
 
+        // Strike Timer (5-second ad)
+        function startStrikeTimer() {
+            if (strikeTimerInterval) clearInterval(strikeTimerInterval);
+
+            strikeSeconds = 5;
+            const strikeTimerElement = document.getElementById('strikeTimer');
+            
+            strikeTimerInterval = setInterval(() => {
+                strikeSeconds--;
+                strikeTimerElement.textContent = strikeSeconds;
+                
+                if (strikeSeconds <= 0) {
+                    clearInterval(strikeTimerInterval);
+                    strikeTimerElement.textContent = '0';
+                    document.getElementById('claimCoinsBtn').style.display = 'block';
+                }
+            }, 1000);
+        }
+
+        // Complete Check-in and Add Coins
         async function completeCheckin() {
             if (!currentUser || !userData) return;
 
@@ -966,30 +1479,17 @@
                 const today = new Date().toISOString();
                 const newStreak = (userData.streak || 0) + 1;
                 const newTotalCheckins = (userData.totalCheckins || 0) + 1;
-
-                // Check for early bird bonus (before 10 AM)
-                const now = new Date();
-                const isEarlyBird = now.getHours() < 10;
-                const streakBonus = isEarlyBird ? 1 : 0;
-                const totalStreak = newStreak + streakBonus;
+                const newCoins = (userData.coins || 0) + 10;
 
                 // Update user data
                 const updates = {
-                    streak: totalStreak,
+                    streak: newStreak,
                     totalCheckins: newTotalCheckins,
+                    coins: newCoins,
                     lastCheckin: today,
-                    checkedInToday: true
+                    checkedInToday: true,
+                    ['monthlyData/' + getCurrentMonth()]: newCoins
                 };
-
-                // Update monthly challenges
-                updates['monthlyChallenges/earlyBird'] = (userData.monthlyChallenges?.earlyBird || 0) + (isEarlyBird ? 1 : 0);
-
-                // Check for perfect month (30 consecutive days)
-                if (totalStreak >= 30) {
-                    updates.rewardEligible = true;
-                    updates['monthlyChallenges/perfectMonth'] = true;
-                    document.getElementById('rewardSection').style.display = 'block';
-                }
 
                 await database.ref('users/' + currentUser.uid).update(updates);
 
@@ -1002,16 +1502,10 @@
                 document.getElementById('resetBtn').style.display = 'none';
                 document.getElementById('startTimerBtn').style.display = 'inline-block';
 
-                // Show success message
-                let message = `Day ${totalStreak} completed!`;
-                if (isEarlyBird) {
-                    message += ' 🐦 Early Bird Bonus Applied!';
-                }
-                if (totalStreak === 30) {
-                    message += ' 🎉 30 Days Complete! Claim your reward!';
-                }
+                // Hide strike popup
+                hideModal('strikePopup');
 
-                showSuccess('Check-in Complete!', message);
+                showSuccess('Coins Added!', `10 coins added to your account! Total: ${newCoins} coins`);
 
             } catch (error) {
                 alert('Error completing check-in: ' + error.message);
@@ -1020,9 +1514,13 @@
 
         // Reward Functions
         async function submitRewardRequest() {
-            const name = document.getElementById('rewardName').value;
-            const email = document.getElementById('rewardEmail').value;
             const upi = document.getElementById('rewardUpi').value;
+            const name = document.getElementById('rewardName').value;
+
+            if (!upi.includes('@')) {
+                alert('Please enter a valid UPI ID (e.g., username@upi)');
+                return;
+            }
 
             try {
                 // Save reward request to database
@@ -1032,44 +1530,47 @@
                     userName: userData.name,
                     userEmail: currentUser.email,
                     requestName: name,
-                    requestEmail: email,
                     upiId: upi,
-                    streak: userData.streak,
+                    coins: userData.coins || 0,
+                    streak: userData.streak || 0,
                     status: 'pending',
-                    requestedAt: new Date().toISOString()
+                    requestedAt: new Date().toISOString(),
+                    month: getCurrentMonth()
                 };
 
                 await database.ref('rewardRequests/' + requestId).set(requestData);
 
-                // Update user data
+                // Reset user coins for new month
                 await database.ref('users/' + currentUser.uid).update({
+                    coins: 0,
+                    streak: 0,
                     rewardRequested: true,
-                    streak: 0, // Reset streak after claiming reward
-                    rewardEligible: false
+                    lastRewardRequest: new Date().toISOString()
                 });
 
-                userData.rewardRequested = true;
+                // Update local data
+                userData.coins = 0;
                 userData.streak = 0;
-                userData.rewardEligible = false;
+                userData.rewardRequested = true;
 
                 // Send Telegram notification
                 await sendTelegramNotification(
-                    `🎁 REWARD REQUEST\n` +
+                    `🎁 MONTHLY REWARD REQUEST\n` +
                     `User: ${userData.name}\n` +
                     `Email: ${currentUser.email}\n` +
                     `Request Name: ${name}\n` +
-                    `Request Email: ${email}\n` +
-                    `UPI: ${upi}\n` +
+                    `UPI ID: ${upi}\n` +
+                    `Coins Earned: ${requestData.coins}\n` +
                     `Streak: ${requestData.streak} days\n` +
+                    `Month: ${getCurrentMonth()}\n` +
                     `Time: ${new Date().toLocaleString()}`
                 );
 
                 // Update UI
-                document.getElementById('rewardSection').style.display = 'none';
                 updateUI();
 
                 hideModal('rewardModal');
-                showSuccess('Reward Requested!', 'Your reward will be processed within 24 hours. Check your email for updates.');
+                showSuccess('Reward Requested!', `Your reward request for ${requestData.coins} coins has been submitted. Reward will be sent to your UPI within 24 hours.`);
 
                 // Reset form
                 document.getElementById('rewardForm').reset();
@@ -1077,6 +1578,12 @@
             } catch (error) {
                 alert('Error submitting reward request: ' + error.message);
             }
+        }
+
+        // Helper Functions
+        function getCurrentMonth() {
+            const now = new Date();
+            return `${now.getFullYear()}-${now.getMonth() + 1}`;
         }
 
         // Telegram Notification Function
@@ -1101,6 +1608,70 @@
             } catch (error) {
                 console.error('Error sending Telegram notification:', error);
             }
+        }
+
+        // Ad Loading Function
+        function loadAds() {
+            // Load banner ads
+            for (let i = 1; i <= 8; i++) {
+                const adContainer = document.getElementById(`ad${i}`);
+                if (adContainer) {
+                    adContainer.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 0.9rem; color: #718096; margin-bottom: 10px;">ADVERTISEMENT</div>
+                            <div style="width: 320px; height: 50px; background: #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                <span style="color: #4a5568;">Ad Space ${i}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // Load popup ads
+            document.getElementById('popupAd').innerHTML = `
+                <div style="text-align: center; padding: 15px;">
+                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-bottom: 8px;">ADVERTISEMENT</div>
+                    <div style="width: 300px; height: 100px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <span style="color: white;">Special Offer</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('strikeAd').innerHTML = `
+                <div style="text-align: center; padding: 15px;">
+                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-bottom: 8px;">ADVERTISEMENT</div>
+                    <div style="width: 300px; height: 150px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <span style="color: white;">Watch for 5 seconds</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('rewardAd').innerHTML = `
+                <div style="text-align: center; padding: 15px;">
+                    <div style="font-size: 0.9rem; color: #718096; margin-bottom: 10px;">ADVERTISEMENT</div>
+                    <div style="width: 300px; height: 100px; background: #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                        <span style="color: #4a5568;">Claim Your Reward!</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Contact Support
+        function contactSupport() {
+            window.location.href = "mailto:gotmprajapat00@gmail.com?subject=CheckIn30 Support";
+        }
+
+        // Footer Links
+        function showTerms() {
+            alert('Terms & Conditions: Daily check-in required. 10 coins per day. Rewards based on total coins. One reward per month.');
+        }
+
+        function showPrivacy() {
+            alert('Privacy Policy: We respect your privacy. Your data is secure with Firebase.');
+        }
+
+        function showAbout() {
+            alert('CheckIn30: Build daily habits and earn rewards for consistency.');
         }
     </script>
 </body>
