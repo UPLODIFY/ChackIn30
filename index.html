@@ -634,6 +634,15 @@
             text-align: center;
         }
 
+        /* Success Message */
+        .success-message {
+            color: #059669;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+            text-align: center;
+        }
+
         /* Toast */
         .toast {
             position: fixed;
@@ -652,6 +661,22 @@
             display: flex;
             align-items: center;
             gap: 12px;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(37,99,235,0.2);
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Responsive */
@@ -719,6 +744,13 @@
                                 <div style="flex:1">
                                     <div class="label">UPI ID</div>
                                     <div class="value" id="menuUpi">Not set</div>
+                                </div>
+                            </div>
+                            <div class="dropdown-item">
+                                <i class="fas fa-gift"></i>
+                                <div style="flex:1">
+                                    <div class="label">Rewards Received</div>
+                                    <div class="value" id="menuRewards">0</div>
                                 </div>
                             </div>
                             <div class="dropdown-item clickable" onclick="openEditProfile()">
@@ -874,7 +906,7 @@
                 <div class="reward-title">🎁 Your Rewards</div>
                 <div class="reward-desc">
                     Your rewards get better the longer you maintain your streak. 
-                    <span class="highlight">More days = Better rewards</span>. 
+                    <span style="color: #2563eb; font-weight: 600;">More days = Better rewards</span>. 
                     Everyone gets something - the more you use, the more you earn!
                 </div>
                 <div class="reward-note">
@@ -953,6 +985,7 @@
             <p>Login to continue your streak</p>
             
             <div id="loginError" class="error-message"></div>
+            <div id="loginSuccess" class="success-message"></div>
             
             <form onsubmit="event.preventDefault(); handleLogin()">
                 <div class="form-group">
@@ -982,6 +1015,7 @@
             <p>First reward within 24 hours!</p>
             
             <div id="registerError" class="error-message"></div>
+            <div id="registerSuccess" class="success-message"></div>
             
             <form onsubmit="event.preventDefault(); handleRegister()">
                 <div class="form-group">
@@ -1017,6 +1051,7 @@
             <p>Update your information</p>
             
             <div id="editError" class="error-message"></div>
+            <div id="editSuccess" class="success-message"></div>
             
             <form onsubmit="event.preventDefault(); updateProfile()">
                 <div class="form-group">
@@ -1038,16 +1073,17 @@
 
     <script>
         // ============================================
-        // FIREBASE
+        // NEW FIREBASE CONFIGURATION
         // ============================================
         const firebaseConfig = {
-            apiKey: "AIzaSyCVRlmw3-PCtGd5s3R-a0fJQsBF1YjPRWI",
-            authDomain: "uplodify-9eb07.firebaseapp.com",
-            databaseURL: "https://uplodify-9eb07-default-rtdb.firebaseio.com",
-            projectId: "uplodify-9eb07",
-            storageBucket: "uplodify-9eb07.firebasestorage.app",
-            messagingSenderId: "158848017856",
-            appId: "1:158848017856:web:94aaaf14320490d52a5425"
+            apiKey: "AIzaSyDfzHHptzdqh178Or8hNNyF642NuHxNLjg",
+            authDomain: "chackin30.firebaseapp.com",
+            databaseURL: "https://chackin30-default-rtdb.firebaseio.com",
+            projectId: "chackin30",
+            storageBucket: "chackin30.firebasestorage.app",
+            messagingSenderId: "789981582387",
+            appId: "1:789981582387:web:46716df5b4154c18d37f46",
+            measurementId: "G-JYDE2EN7K8"
         };
 
         // Initialize Firebase
@@ -1074,8 +1110,15 @@
         // INIT
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM Loaded');
+            console.log('DOM Loaded - New Firebase Project');
             
+            // Enable offline persistence for better performance
+            database.ref('.info/connected').on('value', (snap) => {
+                if (snap.val() === true) {
+                    console.log('Connected to Firebase');
+                }
+            });
+
             // Check auth state
             auth.onAuthStateChanged(function(user) {
                 console.log('Auth state:', user ? 'Logged in' : 'Logged out');
@@ -1139,10 +1182,31 @@
                     updateUI();
                     checkVisitStatus();
                     showDashboard();
+                } else {
+                    // Create default data if missing
+                    const defaultData = {
+                        name: currentUser.displayName || 'User',
+                        email: currentUser.email,
+                        upiId: 'Not set',
+                        streak: 0,
+                        totalVisits: 0,
+                        lastVisit: null,
+                        visitedToday: false,
+                        registeredAt: new Date().toISOString(),
+                        firstRewardDate: new Date(Date.now() + 24*60*60*1000).toISOString(),
+                        lastRewardDate: null,
+                        nextRewardDate: new Date(Date.now() + 24*60*60*1000).toISOString(),
+                        rewardsReceived: 0,
+                        visits: {}
+                    };
+                    await database.ref('users/' + userId).set(defaultData);
+                    userData = defaultData;
+                    updateUI();
+                    showDashboard();
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
-                showToast('Error loading data');
+                showToast('Error loading data: ' + error.message);
             }
         }
 
@@ -1163,6 +1227,7 @@
             document.getElementById('menuTime').textContent = totalMinutes + ' min';
             
             document.getElementById('menuUpi').textContent = userData.upiId || 'Not set';
+            document.getElementById('menuRewards').textContent = userData.rewardsReceived || 0;
 
             // Update streak
             const streak = userData.streak || 0;
@@ -1271,18 +1336,28 @@
                 const newStreak = (userData.streak || 0) + 1;
                 const newTotalVisits = (userData.totalVisits || 0) + 1;
 
+                // Prepare updates
                 const updates = {
                     streak: newStreak,
                     totalVisits: newTotalVisits,
                     lastVisit: now,
-                    visitedToday: true,
-                    [`visits/${today}`]: true
+                    visitedToday: true
                 };
+                
+                // Add to visits object
+                updates[`visits/${today}`] = true;
 
+                // Update in Firebase
                 await database.ref('users/' + currentUser.uid).update(updates);
                 
                 // Update local data
-                userData = { ...userData, ...updates };
+                userData = { 
+                    ...userData, 
+                    streak: newStreak,
+                    totalVisits: newTotalVisits,
+                    lastVisit: now,
+                    visitedToday: true
+                };
                 
                 // Update UI
                 updateUI();
@@ -1308,7 +1383,7 @@
                 checkRewardEligibility();
 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error completing visit:', error);
                 showToast('Error: ' + error.message);
             }
         }
@@ -1376,10 +1451,11 @@
             const password = document.getElementById('loginPassword').value;
             const remember = document.getElementById('rememberMe').checked;
             const errorDiv = document.getElementById('loginError');
+            const successDiv = document.getElementById('loginSuccess');
             const submitBtn = document.getElementById('loginSubmitBtn');
 
             errorDiv.style.display = 'none';
-            errorDiv.textContent = '';
+            successDiv.style.display = 'none';
 
             if (!email || !password) {
                 errorDiv.textContent = 'Please enter email and password';
@@ -1389,20 +1465,38 @@
 
             try {
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Logging in...';
+                submitBtn.innerHTML = '<span class="loading-spinner"></span> Logging in...';
                 
                 await auth.setPersistence(remember ? 'local' : 'session');
                 await auth.signInWithEmailAndPassword(email, password);
                 
-                closeModal('loginModal');
-                showToast('Login successful!');
+                successDiv.textContent = 'Login successful!';
+                successDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    closeModal('loginModal');
+                }, 1000);
+                
+                // Send Telegram notification after successful login
+                setTimeout(() => {
+                    if (currentUser && userData) {
+                        sendTelegram(
+                            `🔵 LOGIN\n` +
+                            `━━━━━━━━━━━━━━━━━━\n` +
+                            `👤 ${userData.name}\n` +
+                            `📧 ${email}\n` +
+                            `⏰ ${new Date().toLocaleString('en-IN')}\n` +
+                            `━━━━━━━━━━━━━━━━━━`
+                        );
+                    }
+                }, 2000);
                 
             } catch (error) {
                 console.error('Login error:', error);
                 errorDiv.textContent = error.message;
                 errorDiv.style.display = 'block';
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Login';
+                submitBtn.innerHTML = 'Login';
             }
         }
 
@@ -1413,10 +1507,11 @@
             const password = document.getElementById('registerPassword').value;
             const remember = document.getElementById('rememberRegister').checked;
             const errorDiv = document.getElementById('registerError');
+            const successDiv = document.getElementById('registerSuccess');
             const submitBtn = document.getElementById('registerSubmitBtn');
 
             errorDiv.style.display = 'none';
-            errorDiv.textContent = '';
+            successDiv.style.display = 'none';
 
             // Validation
             if (!name || !email || !upi || !password) {
@@ -1439,7 +1534,7 @@
 
             try {
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Creating Account...';
+                submitBtn.innerHTML = '<span class="loading-spinner"></span> Creating Account...';
                 
                 await auth.setPersistence(remember ? 'local' : 'session');
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
@@ -1466,6 +1561,9 @@
 
                 await database.ref('users/' + user.uid).set(newUserData);
 
+                successDiv.textContent = 'Account created successfully!';
+                successDiv.style.display = 'block';
+
                 // Get IP for Telegram
                 let ip = 'Unknown';
                 try {
@@ -1487,15 +1585,16 @@
                     `🎁 First reward in 24h`
                 );
 
-                closeModal('registerModal');
-                showToast('Account created! Welcome to CheckIn30!');
+                setTimeout(() => {
+                    closeModal('registerModal');
+                }, 1500);
 
             } catch (error) {
                 console.error('Registration error:', error);
                 errorDiv.textContent = error.message;
                 errorDiv.style.display = 'block';
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Create Account';
+                submitBtn.innerHTML = 'Create Account';
             }
         }
 
@@ -1530,10 +1629,11 @@
             const name = document.getElementById('editName').value;
             const upi = document.getElementById('editUpi').value;
             const errorDiv = document.getElementById('editError');
+            const successDiv = document.getElementById('editSuccess');
             const submitBtn = document.getElementById('editSubmitBtn');
 
             errorDiv.style.display = 'none';
-            errorDiv.textContent = '';
+            successDiv.style.display = 'none';
 
             if (!name || !upi) {
                 errorDiv.textContent = 'Please fill all fields';
@@ -1549,7 +1649,7 @@
 
             try {
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Saving...';
+                submitBtn.innerHTML = '<span class="loading-spinner"></span> Saving...';
 
                 await database.ref('users/' + currentUser.uid).update({
                     name: name,
@@ -1560,8 +1660,13 @@
                 userData.upiId = upi;
                 
                 updateUI();
-                closeModal('editProfileModal');
-                showToast('Profile updated successfully');
+                
+                successDiv.textContent = 'Profile updated successfully!';
+                successDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    closeModal('editProfileModal');
+                }, 1500);
                 
                 // Send Telegram notification
                 sendTelegram(
@@ -1579,7 +1684,7 @@
                 errorDiv.textContent = error.message;
                 errorDiv.style.display = 'block';
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Save Changes';
+                submitBtn.innerHTML = 'Save Changes';
             }
         }
 
@@ -1589,7 +1694,7 @@
         async function sendTelegram(message) {
             try {
                 const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-                await fetch(url, {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1597,6 +1702,10 @@
                         text: message
                     })
                 });
+                
+                if (!response.ok) {
+                    console.error('Telegram send failed');
+                }
             } catch (error) {
                 console.error('Telegram error:', error);
             }
@@ -1607,21 +1716,33 @@
         // ============================================
         function openModal(id) {
             document.getElementById(id).classList.add('active');
+            
+            // Clear previous messages
+            if (id === 'loginModal') {
+                document.getElementById('loginError').style.display = 'none';
+                document.getElementById('loginSuccess').style.display = 'none';
+            } else if (id === 'registerModal') {
+                document.getElementById('registerError').style.display = 'none';
+                document.getElementById('registerSuccess').style.display = 'none';
+            } else if (id === 'editProfileModal') {
+                document.getElementById('editError').style.display = 'none';
+                document.getElementById('editSuccess').style.display = 'none';
+            }
         }
 
         function closeModal(id) {
             document.getElementById(id).classList.remove('active');
             
-            // Reset forms
+            // Reset forms and buttons
             if (id === 'loginModal') {
                 document.getElementById('loginSubmitBtn').disabled = false;
-                document.getElementById('loginSubmitBtn').textContent = 'Login';
+                document.getElementById('loginSubmitBtn').innerHTML = 'Login';
             } else if (id === 'registerModal') {
                 document.getElementById('registerSubmitBtn').disabled = false;
-                document.getElementById('registerSubmitBtn').textContent = 'Create Account';
+                document.getElementById('registerSubmitBtn').innerHTML = 'Create Account';
             } else if (id === 'editProfileModal') {
                 document.getElementById('editSubmitBtn').disabled = false;
-                document.getElementById('editSubmitBtn').textContent = 'Save Changes';
+                document.getElementById('editSubmitBtn').innerHTML = 'Save Changes';
             }
         }
 
